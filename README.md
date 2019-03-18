@@ -109,7 +109,7 @@ const options: IModuleTranslationOptions = {
 
 Lets say each module in the above example resolves to the following translation:
 
-```json
+```
 {
   "KEY: "VALUE"
 }
@@ -117,7 +117,7 @@ Lets say each module in the above example resolves to the following translation:
 
 The final result would then be:
 
-```json
+```
 {
    "KEY: "VALUE",
    "FEATURE1" : {
