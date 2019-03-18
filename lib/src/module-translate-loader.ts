@@ -22,10 +22,6 @@ export class ModuleTranslateLoader implements TranslateLoader {
 
     const { deepMerge, enableNamespacing, nameSpaceUppercase, modules, translateError } = options;
 
-    if (modules.filter(({ moduleName }) => moduleName == null).length > 1) {
-      throw Error('Only 1 module translation is allowed without a moduleName');
-    }
-
     const moduleRequests = modules.map(({ baseTranslateUrl, moduleName, fileType }) => {
       if (!moduleName) {
         const path = `${baseTranslateUrl}/${language}${fileType}`;
@@ -52,7 +48,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
       map(translations =>
         deepMerge
           ? merge.all(translations)
-          : [...translations].reduce((acc, curr) => ({ ...acc, ...curr }), {})
+          : translations.reduce((acc, curr) => ({ ...acc, ...curr }), {})
       )
     );
   }
