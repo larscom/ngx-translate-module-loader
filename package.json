@@ -1,0 +1,60 @@
+{
+  "name": "@larscom/ngx-translate-module-loader",
+  "version": "1.0.0",
+  "description": "Fetch multiple translation files with ngx-translate (http only)",
+  "main": "./dist/public_api.js",
+  "typings": "./dist/public_api.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "lint": "tslint -p tslint.json -t stylish",
+    "test": "jest",
+    "test:update": "jest -u",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --runInBand",
+    "test:coverage": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larscom/ngx-translate-module-loader"
+  },
+  "keywords": [
+    "angular",
+    "ngx-translate",
+    "translate",
+    "rxjs",
+    "module",
+    "http",
+    "i18n"
+  ],
+  "author": "Lars Kniep",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/larscom/ngx-translate-module-loader/issues"
+  },
+  "homepage": "https://github.com/larscom/ngx-translate-module-loader#readme",
+  "devDependencies": {
+    "@angular/common": "^7.0.0",
+    "@angular/compiler": "^7.0.0",
+    "@angular/compiler-cli": "^7.0.0",
+    "@angular/core": "^7.0.0",
+    "@angular/platform-browser": "^7.0.0",
+    "@angular/platform-browser-dynamic": "^7.0.0",
+    "@ngx-translate/core": "^11.0.1",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.11.3",
+    "core-js": "^2.6.5",
+    "jest": "^24.5.0",
+    "rimraf": "^2.6.3",
+    "rxjs": "^6.4.0",
+    "ts-jest": "^24.0.0",
+    "ts-node": "^8.0.3",
+    "tslint": "^5.14.0",
+    "typescript": "^3.3.3333",
+    "zone.js": "^0.8.29"
+  },
+  "peerDependencies": {
+    "@angular/core": "^6.0.0 || ^7.0.0",
+    "@ngx-translate/core": "^10.0.0 || ^11.0.0",
+    "rxjs": ">=6.0.0"
+  }
+}
