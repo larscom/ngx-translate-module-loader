@@ -5,7 +5,7 @@
 [![travis build](https://img.shields.io/travis/com/larscom/ngx-translate-module-loader/master.svg?label=build%20%28master%29)](https://travis-ci.com/larscom/ngx-translate-module-loader/builds)
 [![license](https://img.shields.io/npm/l/@larscom/ngx-translate-module-loader.svg)](https://github.com/larscom/ngx-translate-module-loader/blob/master/LICENSE)
 
-A loader for [@ngx-translate/core](https://github.com/ngx-translate/core) that loads multiple translations using http. Each translation file has it's own namespace so the key/value pairs do not conflict with each other. If desired, this can be disabled.
+A loader for [@ngx-translate/core](https://github.com/ngx-translate/core) that loads multiple translations using http. Each translation file has it's own **namespace** so the key/value pairs do not conflict with each other. If desired, this can be disabled.
 
 ## Dependencies
 
@@ -19,7 +19,7 @@ npm i --save @larscom/ngx-translate-module-loader
 
 ## Usage
 
-**1. create a `HttpLoaderFactory`**
+**1. create an exported `HttpLoaderFactory` function**
 
 ```ts
 import { NgModule } from '@angular/core';
@@ -27,6 +27,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import {
+  FileType,
   ModuleTranslateLoader,
   IModuleTranslationOptions
 } from '@larscom/ngx-translate-module-loader';
@@ -74,6 +75,61 @@ export function HttpLoaderFactory(http: HttpClient) {
 })
 export class AppModule {}
 ```
+
+## Namespacing
+
+By default, each translation file gets it's own namespace based on the `moduleName`, what does it mean?
+
+For example with these options:
+
+```ts
+const options: IModuleTranslationOptions = {
+  modules: [
+    {
+      // final url: ./assets/i18n/en.json
+      moduleName: null,
+      baseTranslateUrl: './assets/i18n',
+      fileType: FileType.JSON
+    },
+    {
+      // final url: ./assets/i18n/feature1/en.json
+      moduleName: 'feature1',
+      baseTranslateUrl: './assets/i18n',
+      fileType: FileType.JSON
+    },
+    {
+      // final url: ./assets/i18n/feature2/en.json
+      moduleName: 'feature2',
+      baseTranslateUrl: './assets/i18n',
+      fileType: FileType.JSON
+    }
+  ]
+};
+```
+
+Lets say each module in the above example resolves to the following translation:
+
+```json
+{
+  "KEY: "VALUE"
+}
+```
+
+The final result would then be:
+
+```json
+{
+   "KEY: "VALUE",
+   "FEATURE1" : {
+     "KEY: "VALUE"
+   },
+    "FEATURE2" : {
+     "KEY: "VALUE"
+   }
+}
+```
+
+If you don't need upper case keys, set `nameSpaceUppercase` to false in the options because it's upper case by default.
 
 ## Configuration
 
