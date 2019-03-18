@@ -56,5 +56,8 @@
     "@angular/core": "^6.0.0 || ^7.0.0",
     "@ngx-translate/core": "^10.0.0 || ^11.0.0",
     "rxjs": ">=6.0.0"
+  },
+  "dependencies": {
+    "deepmerge": "^3.2.0"
   }
 }

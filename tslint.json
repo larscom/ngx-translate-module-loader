@@ -9,6 +9,7 @@
     "no-console": false,
     "no-debugger": false,
     "object-literal-sort-keys": false,
-    "variable-name": false
+    "variable-name": false,
+    "semicolon": false
   }
 }

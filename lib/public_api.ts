@@ -1,2 +1,1 @@
-export { MultiTranslateModuleLoader } from './src/multi-module-loader';
-export { ITranslateOptions } from './src/models/translate-options';
+export * from './src/public_api';

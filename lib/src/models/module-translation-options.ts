@@ -1,0 +1,23 @@
+import { IModuleTranslation } from './module-translation';
+
+export interface IModuleTranslationOptions {
+  /**
+   * The translation module configurations
+   */
+  modules: IModuleTranslation[];
+  /**
+   * Each module gets its own namespace so it doesn't conflict with other modules
+   * @default enableNamespacing true
+   */
+  enableNamespacing?: boolean;
+  /**
+   * Create namespaces in Uppercase if namespacing is enabled
+   * @default nameSpaceUppercase true
+   */
+  nameSpaceUppercase?: boolean;
+  /**
+   * Function that gets executed if an http error occurred
+   * @param error the error that occurred
+   */
+  translateError?: (error: any) => void;
+}
