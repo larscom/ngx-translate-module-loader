@@ -2,15 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
+import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
+import merge from 'deepmerge';
 
 import { FileType } from './models/file-type';
 import { IModuleTranslationOptions } from './models/module-translation-options';
 import { ModuleTranslateLoader } from './module-translate-loader';
-import merge from 'deepmerge';
 
 describe('ModuleTranslateLoader', () => {
   let httpMock: HttpTestingController;
