@@ -10,6 +10,7 @@ import {
 import { FileType } from './models/file-type';
 import { IModuleTranslationOptions } from './models/module-translation-options';
 import { ModuleTranslateLoader } from './module-translate-loader';
+import merge from 'deepmerge';
 
 describe('ModuleTranslateLoader', () => {
   let httpMock: HttpTestingController;
@@ -58,13 +59,12 @@ describe('ModuleTranslateLoader', () => {
     const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
 
     loader.getTranslation(language).subscribe(translation => {
-      expect(translation).toEqual({
-        ...mockTranslation,
-        ...options.modules
+      const modules = merge.all(
+        options.modules
           .filter(({ moduleName }) => moduleName != null)
           .map(({ moduleName }) => ({ [moduleName.toUpperCase()]: mockTranslation }))
-          .reduce((moduleA, moduleB) => ({ ...moduleA, ...moduleB }))
-      });
+      );
+      expect(translation).toEqual({ ...mockTranslation, ...modules });
       done();
     });
 

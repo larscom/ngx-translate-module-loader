@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateLoader } from '@ngx-translate/core';
 import merge from 'deepmerge';
 import { forkJoin as ForkJoin, MonoTypeOperatorFunction, Observable, of } from 'rxjs';
-import { catchError, filter, map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 import { IModuleTranslationOptions } from './models/module-translation-options';
 
@@ -16,10 +16,11 @@ export class ModuleTranslateLoader implements TranslateLoader {
     const options: IModuleTranslationOptions = {
       enableNamespacing: true,
       nameSpaceUppercase: true,
+      deepMerge: true,
       ...this._options
     };
 
-    const { enableNamespacing, nameSpaceUppercase, modules, translateError } = options;
+    const { deepMerge, enableNamespacing, nameSpaceUppercase, modules, translateError } = options;
 
     if (modules.filter(({ moduleName }) => moduleName == null).length > 1) {
       throw Error('Only 1 module translation is allowed without a moduleName');
@@ -47,7 +48,13 @@ export class ModuleTranslateLoader implements TranslateLoader {
       );
     });
 
-    return ForkJoin(moduleRequests).pipe(map(translations => merge.all(translations)));
+    return ForkJoin(moduleRequests).pipe(
+      map(translations =>
+        deepMerge
+          ? merge.all(translations)
+          : [...translations].reduce((acc, curr) => ({ ...acc, ...curr }), {})
+      )
+    );
   }
 
   private _catchError = (

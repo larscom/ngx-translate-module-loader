@@ -16,6 +16,11 @@ export interface IModuleTranslationOptions {
    */
   nameSpaceUppercase?: boolean;
   /**
+   * Perform a deepmerge when merging translation files
+   * @default deepMerge true
+   */
+  deepMerge?: boolean;
+  /**
    * Function that gets executed if an http error occurred
    * @param error the error that occurred
    */
