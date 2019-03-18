@@ -176,7 +176,7 @@ export interface IModuleTranslation {
    * The base translate URL
    *
    * For example: ./assets/i18n
-   * @description the final url will then be: ./assets/i18n/shared if the moduleName is feature1
+   * @description the final url will then be: ./assets/i18n/shared if the moduleName is shared
    * @see moduleName
    */
   baseTranslateUrl: string;
