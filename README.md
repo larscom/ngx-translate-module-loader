@@ -7,6 +7,10 @@
 
 A loader for [@ngx-translate/core](https://github.com/ngx-translate/core) that loads multiple translations using http. Each translation file has it's own **namespace** so the key/value pairs do not conflict with each other. If desired, this can be disabled.
 
+## Demo
+You can play arround on StackBlitz:
+https://stackblitz.com/edit/ngx-translate-module-loader
+
 ## Dependencies
 
 `@larscom/ngx-translate-module-loader` depends on [@ngx-translate/core](https://github.com/ngx-translate/core) and [Angular](https://github.com/angular/angular).
@@ -130,6 +134,7 @@ The final result would then be:
 ```
 
 If you don't need upper case keys, set `nameSpaceUppercase` to false in the options because it's upper case by default.
+If you don't want to enable namespaces at all, set `enableNamespacing` to false
 
 ## Configuration
 

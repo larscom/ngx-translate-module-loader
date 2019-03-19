@@ -25,8 +25,8 @@ ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION.
 
 ## Minimal reproduction of the problem with instructions
 <!--
-For bug reports please provide the *STEPS TO REPRODUCE* and if possible a *MINIMAL DEMO* of the problem via
-https://stackblitz.com or similar.
+For bug reports please provide the *STEPS TO REPRODUCE* and if possible a *MINIMAL DEMO* of the problem via https://stackblitz.com or similar.
+You can use this demo as starting point: https://stackblitz.com/edit/ngx-translate-module-loader
 -->
 
 
