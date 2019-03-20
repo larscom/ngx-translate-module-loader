@@ -8,9 +8,9 @@ import {
 } from '@angular/platform-browser-dynamic/testing';
 import merge from 'deepmerge';
 
-import { FileType } from './models/file-type';
-import { IModuleTranslationOptions } from './models/module-translation-options';
-import { ModuleTranslateLoader } from './module-translate-loader';
+import { FileType } from '../src/models/file-type';
+import { IModuleTranslationOptions } from '../src/models/module-translation-options';
+import { ModuleTranslateLoader } from '../src/module-translate-loader';
 
 describe('ModuleTranslateLoader', () => {
   let httpMock: HttpTestingController;
