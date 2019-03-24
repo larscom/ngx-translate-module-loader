@@ -7,20 +7,26 @@ import { catchError, map } from 'rxjs/operators';
 import { IModuleTranslationOptions } from './models/module-translation-options';
 
 export class ModuleTranslateLoader implements TranslateLoader {
+  private _defaultOptions = {
+    enableNamespacing: true,
+    nameSpaceUppercase: true,
+    deepMerge: true,
+    ...this._options
+  };
+
   constructor(
     private readonly _http: HttpClient,
     private readonly _options: IModuleTranslationOptions
   ) {}
 
   public getTranslation(language: string): Observable<any> {
-    const options: IModuleTranslationOptions = {
-      enableNamespacing: true,
-      nameSpaceUppercase: true,
-      deepMerge: true,
-      ...this._options
-    };
-
-    const { deepMerge, enableNamespacing, nameSpaceUppercase, modules, translateError } = options;
+    const {
+      deepMerge,
+      enableNamespacing,
+      nameSpaceUppercase,
+      modules,
+      translateError
+    } = this._defaultOptions;
 
     const moduleRequests = modules.map(({ baseTranslateUrl, moduleName, fileType }) => {
       if (!moduleName) {
