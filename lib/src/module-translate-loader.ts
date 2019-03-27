@@ -6,17 +6,29 @@ import { catchError, map } from 'rxjs/operators';
 
 import { IModuleTranslationOptions } from './models/module-translation-options';
 
+type Translation = { [x: string]: string };
+
 export class ModuleTranslateLoader implements TranslateLoader {
   private _defaultOptions = {
     enableNamespacing: true,
     nameSpaceUppercase: true,
     deepMerge: true,
-    ...this._options
+    ...this.options
   };
 
+  /**
+   * The ModuleTranslateLoader for 'ngx-translate/core'
+   *
+   * @description Fetch multiple translation files (http).
+   *
+   * @param http the HttpClient from 'angular/common'
+   * @param options the configurable options for ModuleTranslateLoader
+   *
+   * @see https://github.com/larscom/ngx-translate-module-loader
+   */
   constructor(
-    private readonly _http: HttpClient,
-    private readonly _options: IModuleTranslationOptions
+    private readonly http: HttpClient,
+    private readonly options: IModuleTranslationOptions
   ) {}
 
   public getTranslation(language: string): Observable<any> {
@@ -31,20 +43,18 @@ export class ModuleTranslateLoader implements TranslateLoader {
     const moduleRequests = modules.map(({ baseTranslateUrl, moduleName, fileType }) => {
       if (!moduleName) {
         const path = `${baseTranslateUrl}/${language}${fileType}`;
-        return this._http
-          .get<{ [x: string]: string }>(path)
-          .pipe(this._catchError(path, translateError));
+        return this.http.get<Translation>(path).pipe(this._catchError(path, translateError));
       }
 
       const modulePath = `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
-      return this._http.get<{ [x: string]: string }>(modulePath).pipe(
+      return this.http.get<Translation>(modulePath).pipe(
         map(translation => {
           if (!enableNamespacing) {
             return translation;
           }
 
           const key = nameSpaceUppercase ? moduleName.toUpperCase() : moduleName.toLowerCase();
-          return { [key]: translation };
+          return Object({ [key]: translation }) as Translation;
         }),
         this._catchError(modulePath, translateError)
       );
@@ -54,21 +64,22 @@ export class ModuleTranslateLoader implements TranslateLoader {
       map(translations =>
         deepMerge
           ? merge.all(translations)
-          : translations.reduce((acc, curr) => ({ ...acc, ...curr }), {})
+          : translations.reduce((acc, curr) => ({ ...acc, ...curr }), Object())
       )
     );
   }
 
-  private _catchError = (
+  private _catchError = <T>(
     path: string,
     translateError?: (error: any) => void
-  ): MonoTypeOperatorFunction<any> => {
+  ): MonoTypeOperatorFunction<T> => {
     return catchError(e => {
       if (translateError) {
         translateError(e);
       }
+
       console.error('Unable to load translation file:', path);
-      return of({});
+      return of(Object());
     });
   };
 }
