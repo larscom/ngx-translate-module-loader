@@ -2,11 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
-import merge from 'deepmerge';
+import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 
 import { FileType } from '../src/models/file-type';
 import { IModuleTranslationOptions } from '../src/models/module-translation-options';
@@ -89,13 +85,13 @@ describe('ModuleTranslateLoader', () => {
     const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), defaultOptions);
 
     loader.getTranslation(language).subscribe(translation => {
-      const modulesTranslation = merge.all(
-        defaultOptions.modules
-          .filter(({ moduleName }) => moduleName != null)
-          .map(({ moduleName }) => ({ [moduleName.toUpperCase()]: mockTranslation }))
-      );
-
-      const expected = { ...mockTranslation, ...modulesTranslation };
+      const expected = {
+        key: 'value',
+        key1: 'value1',
+        parent: { child: { grandChild: 'value1' } },
+        FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+        FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+      };
 
       expect(translation).toEqual(expected);
       done();

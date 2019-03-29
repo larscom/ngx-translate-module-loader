@@ -31,7 +31,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
     private readonly options: IModuleTranslationOptions
   ) {}
 
-  public getTranslation(language: string): Observable<any> {
+  public getTranslation(language: string): Observable<Translation> {
     const {
       deepMerge,
       enableNamespacing,
@@ -63,7 +63,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
     return ForkJoin(moduleRequests).pipe(
       map(translations =>
         deepMerge
-          ? merge.all(translations)
+          ? merge.all<Translation>(translations)
           : translations.reduce((acc, curr) => ({ ...acc, ...curr }), Object())
       )
     );
