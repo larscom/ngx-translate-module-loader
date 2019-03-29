@@ -6,7 +6,7 @@ import { catchError, map } from 'rxjs/operators';
 
 import { IModuleTranslationOptions } from './models/module-translation-options';
 
-type Translation = { [x: string]: string };
+export type Translation = { [x: string]: string };
 
 export class ModuleTranslateLoader implements TranslateLoader {
   private _defaultOptions = {
