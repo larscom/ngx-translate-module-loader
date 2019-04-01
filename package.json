@@ -1,6 +1,6 @@
 {
   "name": "@larscom/ngx-translate-module-loader",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Fetch multiple translation files (http) with ngx-translate. Each translations file gets it's own namespace out of the box",
   "main": "./dist/public_api.js",
   "typings": "./dist/public_api.d.ts",
