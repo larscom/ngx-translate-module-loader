@@ -1,4 +1,5 @@
 import { FileType } from './file-type';
+import { Translation } from './translation';
 
 export interface IModuleTranslation {
   /**
@@ -28,4 +29,9 @@ export interface IModuleTranslation {
    * Use this property if you want to override the default nameSpace
    */
   nameSpace?: string;
+  /**
+   * Custom translation map function after retrieving a translation file
+   * @param translation the resolved translation file
+   */
+  translateMap?: (translation: Translation) => Translation;
 }

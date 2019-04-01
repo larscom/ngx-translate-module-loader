@@ -11,6 +11,7 @@ Each translation file has it's own **namespace** out of the box so the key/value
 
 If desired, namespacing can be disabled or modified to your own needs.
 
+
 ## Demo
 
 You can play arround on StackBlitz:
@@ -152,11 +153,16 @@ export interface IModuleTranslationOptions {
    */
   deepMerge?: boolean;
   /**
-   * Function that gets executed if an http error occurred
+   * Function that gets executed if an error occurred while retrieving a translation file
    * @param error the error that occurred
    * @param path the path to the location file
    */
   translateError?: (error: any, path: string) => void;
+  /**
+   * Custom translate merge function after retrieving all translation files
+   * @param translations the resolved translation files
+   */
+  translateMerger?: (translations: Translation[]) => Translation;
 }
 ```
 
@@ -189,5 +195,10 @@ export interface IModuleTranslation {
    * Use this property if you want to override the default nameSpace
    */
   nameSpace?: string;
+  /**
+   * Custom translation map function after retrieving a translation file
+   * @param translation the resolved translation file
+   */
+  translationMap?: (translation: Translation) => Translation;
 }
 ```

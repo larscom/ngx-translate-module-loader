@@ -1,4 +1,5 @@
 import { IModuleTranslation } from './module-translation';
+import { Translation } from './translation';
 
 export interface IModuleTranslationOptions {
   /**
@@ -21,9 +22,14 @@ export interface IModuleTranslationOptions {
    */
   deepMerge?: boolean;
   /**
-   * Function that gets executed if an http error occurred
+   * Function that gets executed if an error occurred while retrieving a translation file
    * @param error the error that occurred
    * @param path the path to the location file
    */
   translateError?: (error: any, path: string) => void;
+  /**
+   * Custom translate merge function after retrieving all translation files
+   * @param translations the resolved translation files
+   */
+  translateMerger?: (translations: Translation[]) => Translation;
 }

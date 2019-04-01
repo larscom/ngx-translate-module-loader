@@ -9,6 +9,7 @@ import {
 
 import { FileType } from '../src/models/file-type';
 import { IModuleTranslationOptions } from '../src/models/module-translation-options';
+import { Translation } from '../src/models/translation';
 import { ModuleTranslateLoader } from '../src/module-translate-loader';
 
 describe('ModuleTranslateLoader', () => {
@@ -160,6 +161,129 @@ describe('ModuleTranslateLoader', () => {
       const mock = httpMock.expectOne(path);
       expect(mock.request.method).toEqual('GET');
       mock.flush(mockTranslation);
+    });
+  });
+
+  it('should load the english translation from different modules with a custom translateMerger', done => {
+    const options: IModuleTranslationOptions = {
+      ...defaultOptions,
+      translateMerger: (translations: Translation[]) => {
+        return translations.reduce((acc, curr) => ({ ...acc, ...curr }), Object());
+      }
+    };
+
+    const language = 'en';
+
+    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+
+    loader.getTranslation(language).subscribe(translation => {
+      const expected = {
+        key: 'value',
+        key1: 'value1',
+        parent: { child: { grandChild: 'value1' } },
+        FEATURE1: {
+          key1: 'feature1_value1',
+          key2: 'feature1_value2',
+          parent: {
+            child: {
+              grandChild1: 'feature1_value1',
+              grandChild2: 'feature1_value2'
+            }
+          }
+        },
+        FEATURE2: {
+          key3: 'feature2_value3',
+          key4: 'feature2_value4',
+          parent: {
+            child: {
+              grandChild1: 'feature2_value1',
+              grandChild2: 'feature2_value2',
+              grandChild3: 'feature2_value3'
+            }
+          }
+        }
+      };
+      expect(translation).toEqual(expected);
+      done();
+    });
+
+    options.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+      const path =
+        moduleName == null
+          ? `${baseTranslateUrl}/${language}${fileType}`
+          : `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
+
+      const mock = httpMock.expectOne(path);
+      expect(mock.request.method).toEqual('GET');
+      const response = moduleName == null ? mockTranslation : moduleMockTranslations[moduleName];
+      mock.flush(response);
+    });
+  });
+
+  it('should load the english translation from different modules with a custom translateMap', done => {
+    const options: IModuleTranslationOptions = {
+      deepMerge: true,
+      modules: [
+        {
+          moduleName: null,
+          baseTranslateUrl: './assets/i18n',
+          fileType: FileType.JSON,
+          translateMap: (translation: Translation) => {
+            return Object.keys(translation).reduce((acc, curr) => {
+              return {
+                ...acc,
+                [curr.toUpperCase()]: translation[curr]
+              };
+            }, {});
+          }
+        },
+        {
+          moduleName: 'feature1',
+          baseTranslateUrl: './assets/i18n',
+          fileType: FileType.JSON,
+          translateMap: (translation: Translation) => {
+            return Object.keys(translation).reduce((acc, curr) => {
+              return {
+                ...acc,
+                [curr.toUpperCase()]: translation[curr]
+              };
+            }, {});
+          }
+        }
+      ]
+    };
+
+    const language = 'en';
+
+    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+
+    loader.getTranslation(language).subscribe(translation => {
+      const expected = {
+        KEY: 'value',
+        KEY1: 'feature1_value1',
+        KEY2: 'feature1_value2',
+        PARENT: {
+          child: {
+            grandChild: 'value1',
+            grandChild1: 'feature1_value1',
+            grandChild2: 'feature1_value2'
+          }
+        }
+      };
+      expect(translation).toEqual(expected);
+      done();
+    });
+
+    options.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+      const path =
+        moduleName == null
+          ? `${baseTranslateUrl}/${language}${fileType}`
+          : `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
+
+      const mock = httpMock.expectOne(path);
+      expect(mock.request.method).toEqual('GET');
+      const response = moduleName == null ? mockTranslation : moduleMockTranslations[moduleName];
+      mock.flush(response);
     });
   });
 

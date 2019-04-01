@@ -5,11 +5,10 @@ import { forkJoin as ForkJoin, MonoTypeOperatorFunction, Observable, of } from '
 import { catchError, map } from 'rxjs/operators';
 
 import { IModuleTranslationOptions } from './models/module-translation-options';
-
-export type Translation = { [x: string]: string };
+import { Translation } from './models/translation';
 
 export class ModuleTranslateLoader implements TranslateLoader {
-  private _defaultOptions = {
+  private _defaultOptions: IModuleTranslationOptions = {
     enableNamespacing: true,
     nameSpaceUppercase: true,
     deepMerge: true,
@@ -37,42 +36,55 @@ export class ModuleTranslateLoader implements TranslateLoader {
       enableNamespacing,
       nameSpaceUppercase,
       modules,
-      translateError
+      translateError,
+      translateMerger
     } = this._defaultOptions;
 
-    const moduleRequests = modules.map(({ baseTranslateUrl, moduleName, fileType, nameSpace }) => {
-      if (!moduleName) {
-        const path = `${baseTranslateUrl}/${language}${fileType}`;
-        return this.http.get<Translation>(path).pipe(this._catchError(path, translateError));
+    const moduleRequests = modules.map(
+      ({ baseTranslateUrl, moduleName, fileType, nameSpace, translateMap }) => {
+        if (!moduleName) {
+          const path = `${baseTranslateUrl}/${language}${fileType}`;
+          return this.http.get<Translation>(path).pipe(
+            map(translation => (translateMap ? translateMap(translation) : translation)),
+            this._catchError(path, translateError)
+          );
+        }
+
+        const modulePath = `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
+        return this.http.get<Translation>(modulePath).pipe(
+          map(translation => {
+            if (translateMap) {
+              return translateMap(translation);
+            }
+
+            if (!enableNamespacing) {
+              return translation;
+            }
+
+            const key = nameSpace
+              ? nameSpaceUppercase
+                ? nameSpace.toUpperCase()
+                : nameSpace.toLowerCase()
+              : nameSpaceUppercase
+              ? moduleName.toUpperCase()
+              : moduleName.toLowerCase();
+
+            return Object({ [key]: translation }) as Translation;
+          }),
+          this._catchError(modulePath, translateError)
+        );
       }
-
-      const modulePath = `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
-      return this.http.get<Translation>(modulePath).pipe(
-        map(translation => {
-          if (!enableNamespacing) {
-            return translation;
-          }
-
-          const key = nameSpace
-            ? nameSpaceUppercase
-              ? nameSpace.toUpperCase()
-              : nameSpace.toLowerCase()
-            : nameSpaceUppercase
-            ? moduleName.toUpperCase()
-            : moduleName.toLowerCase();
-
-          return Object({ [key]: translation }) as Translation;
-        }),
-        this._catchError(modulePath, translateError)
-      );
-    });
+    );
 
     return ForkJoin(moduleRequests).pipe(
-      map(translations =>
-        deepMerge
+      map(translations => {
+        if (translateMerger) {
+          return translateMerger(translations);
+        }
+        return deepMerge
           ? merge.all<Translation>(translations)
-          : translations.reduce((acc, curr) => ({ ...acc, ...curr }), Object())
-      )
+          : translations.reduce((acc, curr) => ({ ...acc, ...curr }), Object());
+      })
     );
   }
 
