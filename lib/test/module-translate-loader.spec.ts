@@ -2,7 +2,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting
+} from '@angular/platform-browser-dynamic/testing';
 
 import { FileType } from '../src/models/file-type';
 import { IModuleTranslationOptions } from '../src/models/module-translation-options';
@@ -91,6 +94,57 @@ describe('ModuleTranslateLoader', () => {
         parent: { child: { grandChild: 'value1' } },
         FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
         FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+      };
+
+      expect(translation).toEqual(expected);
+      done();
+    });
+
+    defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+      const path =
+        moduleName == null
+          ? `${baseTranslateUrl}/${language}${fileType}`
+          : `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
+
+      const mock = httpMock.expectOne(path);
+      expect(mock.request.method).toEqual('GET');
+      mock.flush(mockTranslation);
+    });
+  });
+
+  it('should load the english translation from different modules with a custom namespace', done => {
+    const options: IModuleTranslationOptions = {
+      modules: [
+        {
+          moduleName: null,
+          baseTranslateUrl: './assets/i18n',
+          fileType: FileType.JSON
+        },
+        {
+          moduleName: 'feature1',
+          nameSpace: 'custom1',
+          baseTranslateUrl: './assets/i18n',
+          fileType: FileType.JSON
+        },
+        {
+          moduleName: 'feature2',
+          nameSpace: 'custom2',
+          baseTranslateUrl: './assets/i18n',
+          fileType: FileType.JSON
+        }
+      ]
+    };
+
+    const language = 'en';
+    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+
+    loader.getTranslation(language).subscribe(translation => {
+      const expected = {
+        key: 'value',
+        key1: 'value1',
+        parent: { child: { grandChild: 'value1' } },
+        CUSTOM1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+        CUSTOM2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
       expect(translation).toEqual(expected);
@@ -200,7 +254,8 @@ describe('ModuleTranslateLoader', () => {
       ...defaultOptions,
       enableNamespacing: false,
       deepMerge: false,
-      translateError: error => {
+      translateError: (error, path) => {
+        expect(path).toEqual('./assets/i18n/en.json');
         expect(error).toBeInstanceOf(HttpErrorResponse);
       }
     };

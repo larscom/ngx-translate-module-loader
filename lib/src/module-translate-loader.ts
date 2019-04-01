@@ -40,7 +40,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
       translateError
     } = this._defaultOptions;
 
-    const moduleRequests = modules.map(({ baseTranslateUrl, moduleName, fileType }) => {
+    const moduleRequests = modules.map(({ baseTranslateUrl, moduleName, fileType, nameSpace }) => {
       if (!moduleName) {
         const path = `${baseTranslateUrl}/${language}${fileType}`;
         return this.http.get<Translation>(path).pipe(this._catchError(path, translateError));
@@ -53,7 +53,14 @@ export class ModuleTranslateLoader implements TranslateLoader {
             return translation;
           }
 
-          const key = nameSpaceUppercase ? moduleName.toUpperCase() : moduleName.toLowerCase();
+          const key = nameSpace
+            ? nameSpaceUppercase
+              ? nameSpace.toUpperCase()
+              : nameSpace.toLowerCase()
+            : nameSpaceUppercase
+            ? moduleName.toUpperCase()
+            : moduleName.toLowerCase();
+
           return Object({ [key]: translation }) as Translation;
         }),
         this._catchError(modulePath, translateError)
@@ -71,11 +78,11 @@ export class ModuleTranslateLoader implements TranslateLoader {
 
   private _catchError = <T>(
     path: string,
-    translateError?: (error: any) => void
+    translateError?: (error: any, path: string) => void
   ): MonoTypeOperatorFunction<T> => {
     return catchError(e => {
       if (translateError) {
-        translateError(e);
+        translateError(e, path);
       }
 
       console.error('Unable to load translation file:', path);

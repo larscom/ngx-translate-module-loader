@@ -23,6 +23,7 @@ export interface IModuleTranslationOptions {
   /**
    * Function that gets executed if an http error occurred
    * @param error the error that occurred
+   * @param path the path to the location file
    */
-  translateError?: (error: any) => void;
+  translateError?: (error: any, path: string) => void;
 }

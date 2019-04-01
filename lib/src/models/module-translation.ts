@@ -5,7 +5,7 @@ export interface IModuleTranslation {
    * The module name
    *
    * For example: shared
-   * @description set moduleName explicitly to null if you have a translate file at baseTranslateUrl level
+   * @description set moduleName to null if you have a translate file at baseTranslateUrl level
    * @see baseTranslateUrl
    */
   moduleName: string;
@@ -21,4 +21,11 @@ export interface IModuleTranslation {
    * The file type of the translation file (JSON only currently)
    */
   fileType: FileType;
+  /**
+   * By default, it uses the moduleName as nameSpace
+   * @see moduleName
+   *
+   * Use this property if you want to override the default nameSpace
+   */
+  nameSpace?: string;
 }

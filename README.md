@@ -5,9 +5,14 @@
 [![travis build](https://img.shields.io/travis/com/larscom/ngx-translate-module-loader/master.svg?label=build%20%28master%29)](https://travis-ci.com/larscom/ngx-translate-module-loader/builds)
 [![license](https://img.shields.io/npm/l/@larscom/ngx-translate-module-loader.svg)](https://github.com/larscom/ngx-translate-module-loader/blob/master/LICENSE)
 
-A loader for [@ngx-translate/core](https://github.com/ngx-translate/core) that loads multiple translations using http. Each translation file has it's own **namespace** so the key/value pairs do not conflict with each other. If desired, this can be disabled.
+A loader for [@ngx-translate/core](https://github.com/ngx-translate/core) that loads multiple translations using http.
+
+Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other.
+
+If desired, namespacing can be disabled or modified to your own needs.
 
 ## Demo
+
 You can play arround on StackBlitz:
 https://stackblitz.com/edit/ngx-translate-module-loader
 
@@ -37,27 +42,18 @@ import {
 } from '@larscom/ngx-translate-module-loader';
 import { AppComponent } from './app';
 
-export function HttpLoaderFactory(http: HttpClient) {
+export function ModuleHttpLoaderFactory(http: HttpClient) {
+  const fileType = FileType.JSON;
+  const baseTranslateUrl = './assets/i18n';
+
   const options: IModuleTranslationOptions = {
     modules: [
-      {
-        // final url: ./assets/i18n/en.json
-        moduleName: null,
-        baseTranslateUrl: './assets/i18n',
-        fileType: FileType.JSON
-      },
-      {
-        // final url: ./assets/i18n/feature1/en.json
-        moduleName: 'feature1',
-        baseTranslateUrl: './assets/i18n',
-        fileType: FileType.JSON
-      },
-      {
-        // final url: ./assets/i18n/feature2/en.json
-        moduleName: 'feature2',
-        baseTranslateUrl: './assets/i18n',
-        fileType: FileType.JSON
-      }
+      // final url: ./assets/i18n/en.json
+      { moduleName: null, baseTranslateUrl, fileType },
+      // final url: ./assets/i18n/feature1/en.json
+      { moduleName: 'feature1', baseTranslateUrl, fileType },
+      // final url: ./assets/i18n/feature2/en.json
+      { moduleName: 'feature2', baseTranslateUrl, fileType }
     ]
   };
   return new ModuleTranslateLoader(http, options);
@@ -70,7 +66,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
+        useFactory: ModuleHttpLoaderFactory,
         deps: [HttpClient]
       }
     })
@@ -87,28 +83,22 @@ By default, each translation file gets it's own namespace based on the `moduleNa
 For example with these options:
 
 ```ts
-const options: IModuleTranslationOptions = {
-  modules: [
-    {
-      // final url: ./assets/i18n/en.json
-      moduleName: null,
-      baseTranslateUrl: './assets/i18n',
-      fileType: FileType.JSON
-    },
-    {
-      // final url: ./assets/i18n/feature1/en.json
-      moduleName: 'feature1',
-      baseTranslateUrl: './assets/i18n',
-      fileType: FileType.JSON
-    },
-    {
-      // final url: ./assets/i18n/feature2/en.json
-      moduleName: 'feature2',
-      baseTranslateUrl: './assets/i18n',
-      fileType: FileType.JSON
-    }
-  ]
-};
+export function ModuleHttpLoaderFactory(http: HttpClient) {
+  const fileType = FileType.JSON;
+  const baseTranslateUrl = './assets/i18n';
+
+  const options: IModuleTranslationOptions = {
+    modules: [
+      // no namespace
+      { moduleName: null, baseTranslateUrl, fileType },
+      // nameSpace: feature1
+      { moduleName: 'feature1', baseTranslateUrl, fileType },
+      // nameSpace: feature2
+      { moduleName: 'feature2', baseTranslateUrl, fileType }
+    ]
+  };
+  return new ModuleTranslateLoader(http, options);
+}
 ```
 
 Lets say each module in the above example resolves to the following translation:
@@ -134,7 +124,9 @@ The final result would then be:
 ```
 
 If you don't need upper case keys, set `nameSpaceUppercase` to false in the options because it's upper case by default.
-If you don't want to enable namespaces at all, set `enableNamespacing` to false
+If you don't want to enable namespaces at all, set `enableNamespacing` to false.
+
+You can override the default name space by setting the `nameSpace` property in the options.
 
 ## Configuration
 
@@ -162,8 +154,9 @@ export interface IModuleTranslationOptions {
   /**
    * Function that gets executed if an http error occurred
    * @param error the error that occurred
+   * @param path the path to the location file
    */
-  translateError?: (error: any) => void;
+  translateError?: (error: any, path: string) => void;
 }
 ```
 
@@ -173,7 +166,7 @@ export interface IModuleTranslation {
    * The module name
    *
    * For example: shared
-   * @description set moduleName explicitly to null if you have a translate file at baseTranslateUrl level
+   * @description set moduleName to null if you have a translate file at baseTranslateUrl level
    * @see baseTranslateUrl
    */
   moduleName: string;
@@ -189,5 +182,12 @@ export interface IModuleTranslation {
    * The file type of the translation file (JSON only currently)
    */
   fileType: FileType;
+  /**
+   * By default, it uses the moduleName as nameSpace
+   * @see moduleName
+   *
+   * Use this property if you want to override the default nameSpace
+   */
+  nameSpace?: string;
 }
 ```
