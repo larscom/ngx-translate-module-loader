@@ -423,4 +423,40 @@ describe('ModuleTranslateLoader', () => {
       });
     });
   });
+
+  it('should load from custom path templates', done => {
+    const options: IModuleTranslationOptions = {
+      ...defaultOptions,
+      modulePathTemplate: '{baseTranslateUrl}/{language}/{moduleName}{fileType}',
+      pathTemplate: '{baseTranslateUrl}/{language}{fileType}',
+    };
+
+    const language = 'en';
+
+    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+
+    loader.getTranslation(language).subscribe(translation => {
+      const expected = {
+        key: 'value',
+        key1: 'value1',
+        parent: { child: { grandChild: 'value1' } },
+        FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+        FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+      };
+      expect(translation).toEqual(expected);
+      done();
+    });
+
+    options.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+      const path =
+        moduleName == null
+        ? `${baseTranslateUrl}/${language}${fileType}`
+        : `${baseTranslateUrl}/${language}/${moduleName}${fileType}`;
+
+      const mock = httpMock.expectOne(path);
+      expect(mock.request.method).toEqual('GET');
+
+      mock.flush(mockTranslation);
+    });
+  });
 });

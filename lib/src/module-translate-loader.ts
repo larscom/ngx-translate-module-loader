@@ -12,8 +12,12 @@ export class ModuleTranslateLoader implements TranslateLoader {
     enableNamespacing: true,
     nameSpaceUppercase: true,
     deepMerge: true,
+    modulePathTemplate: '{baseTranslateUrl}/{moduleName}/{language}{fileType}',
+    pathTemplate: '{baseTranslateUrl}/{language}{fileType}',
     ...this.options
   };
+
+  private pathTemplateRx: RegExp = /{([^}]+)}/gi;
 
   /**
    * The ModuleTranslateLoader for 'ngx-translate/core'
@@ -37,20 +41,30 @@ export class ModuleTranslateLoader implements TranslateLoader {
       nameSpaceUppercase,
       modules,
       translateError,
-      translateMerger
+      translateMerger,
+      pathTemplate,
+      modulePathTemplate,
     } = this._defaultOptions;
 
     const moduleRequests = modules.map(
       ({ baseTranslateUrl, moduleName, fileType, nameSpace, translateMap }) => {
         if (!moduleName) {
-          const path = `${baseTranslateUrl}/${language}${fileType}`;
+          const pathOptions = { baseTranslateUrl, language, fileType };
+          const path = pathTemplate.replace(
+            this.pathTemplateRx,
+            (_, m1: string) => pathOptions[m1] || ''
+          );
           return this.http.get<Translation>(path).pipe(
             map(translation => (translateMap ? translateMap(translation) : translation)),
             this._catchError(path, translateError)
           );
         }
 
-        const modulePath = `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
+        const modulePathOptions = { baseTranslateUrl, moduleName, language, fileType };
+        const modulePath = modulePathTemplate.replace(
+          this.pathTemplateRx,
+          (_, m1: string) => modulePathOptions[m1] || ''
+        );
         return this.http.get<Translation>(modulePath).pipe(
           map(translation => {
             if (translateMap) {
