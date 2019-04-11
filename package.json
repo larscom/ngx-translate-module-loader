@@ -1,12 +1,11 @@
 {
-  "name": "ngx-translate-module-loader-2",
+  "name": "@larscom/ngx-translate-module-loader",
   "version": "1.2.1",
   "description": "Fetch multiple translation files (http) with ngx-translate. Each translations file gets it's own namespace out of the box",
   "main": "./dist/public_api.js",
   "typings": "./dist/public_api.d.ts",
   "scripts": {
     "build": "rimraf dist && tsc",
-    "postinstall": "npm run build",
     "lint": "tslint -p tslint.json -t stylish",
     "test": "jest",
     "test:update": "jest -u",
@@ -22,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aidenwallis/ngx-translate-module-loader"
+    "url": "git+https://github.com/larscom/ngx-translate-module-loader"
   },
   "keywords": [
     "angular",

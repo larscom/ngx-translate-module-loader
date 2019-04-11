@@ -17,7 +17,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
     ...this.options
   };
 
-  private pathTemplateRx: RegExp = /{([^}]+)}/gi;
+  private _pathTemplateRx: RegExp = /{([^}]+)}/gi;
 
   /**
    * The ModuleTranslateLoader for 'ngx-translate/core'
@@ -43,7 +43,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
       translateError,
       translateMerger,
       pathTemplate,
-      modulePathTemplate,
+      modulePathTemplate
     } = this._defaultOptions;
 
     const moduleRequests = modules.map(
@@ -51,7 +51,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
         if (!moduleName) {
           const pathOptions = { baseTranslateUrl, language, fileType };
           const path = pathTemplate.replace(
-            this.pathTemplateRx,
+            this._pathTemplateRx,
             (_, m1: string) => pathOptions[m1] || ''
           );
           return this.http.get<Translation>(path).pipe(
@@ -62,7 +62,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
 
         const modulePathOptions = { baseTranslateUrl, moduleName, language, fileType };
         const modulePath = modulePathTemplate.replace(
-          this.pathTemplateRx,
+          this._pathTemplateRx,
           (_, m1: string) => modulePathOptions[m1] || ''
         );
         return this.http.get<Translation>(modulePath).pipe(

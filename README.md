@@ -11,7 +11,6 @@ Each translation file has it's own **namespace** out of the box so the key/value
 
 If desired, namespacing can be disabled or modified to your own needs.
 
-
 ## Demo
 
 You can play arround on StackBlitz:
@@ -163,16 +162,14 @@ export interface IModuleTranslationOptions {
    * @param translations the resolved translation files
    */
   translateMerger?: (translations: Translation[]) => Translation;
-
   /**
-   * Custom module path template for fetching translations.
-   * @default modulePathTemplate "{baseTranslateUrl}/{moduleName}/{language}{fileType}"
+   * Custom module path template for fetching translations
+   * @default modulePathTemplate '{baseTranslateUrl}/{moduleName}/{language}{fileType}'
    */
   modulePathTemplate?: string;
-
   /**
-   * Custom path template for fetching translations.
-   * @default pathTemplate "{baseTranslateUrl}/{language}{fileType}"
+   * Custom path template for fetching translations
+   * @default pathTemplate '{baseTranslateUrl}/{language}{fileType}'
    */
   pathTemplate?: string;
 }
