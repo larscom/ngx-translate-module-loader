@@ -1,0 +1,71 @@
+{
+  "name": "ngx-translate-module-loader-2",
+  "version": "1.2.1",
+  "description": "Fetch multiple translation files (http) with ngx-translate. Each translations file gets it's own namespace out of the box",
+  "main": "./dist/public_api.js",
+  "typings": "./dist/public_api.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "postinstall": "npm run build",
+    "lint": "tslint -p tslint.json -t stylish",
+    "test": "jest",
+    "test:update": "jest -u",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --runInBand",
+    "test:coverage": "jest --coverage"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "pre-push": "npm test && npm run build"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aidenwallis/ngx-translate-module-loader"
+  },
+  "keywords": [
+    "angular",
+    "ngx-translate",
+    "translate",
+    "rxjs",
+    "module",
+    "http",
+    "i18n"
+  ],
+  "author": "Lars Kniep",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/larscom/ngx-translate-module-loader/issues"
+  },
+  "homepage": "https://github.com/larscom/ngx-translate-module-loader#readme",
+  "devDependencies": {
+    "@angular/common": "^7.0.0",
+    "@angular/compiler": "^7.0.0",
+    "@angular/compiler-cli": "^7.0.0",
+    "@angular/core": "^7.0.0",
+    "@angular/platform-browser": "^7.0.0",
+    "@angular/platform-browser-dynamic": "^7.0.0",
+    "@ngx-translate/core": "^11.0.1",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.11.3",
+    "core-js": "^2.6.5",
+    "husky": "^1.3.1",
+    "jest": "^24.5.0",
+    "rimraf": "^2.6.3",
+    "rxjs": "^6.4.0",
+    "ts-jest": "^24.0.0",
+    "ts-node": "^8.0.3",
+    "tslint": "^5.14.0",
+    "typescript": "^3.3.3333",
+    "zone.js": "^0.8.29"
+  },
+  "peerDependencies": {
+    "@angular/common": "^6.0.0 || ^7.0.0",
+    "@ngx-translate/core": "^10.0.0 || ^11.0.0",
+    "rxjs": ">=6.0.0"
+  },
+  "dependencies": {
+    "deepmerge": "^3.2.0"
+  }
+}
