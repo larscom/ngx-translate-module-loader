@@ -5,11 +5,10 @@
 [![travis build](https://img.shields.io/travis/com/larscom/ngx-translate-module-loader/master.svg?label=build%20%28master%29)](https://travis-ci.com/larscom/ngx-translate-module-loader/builds)
 [![license](https://img.shields.io/npm/l/@larscom/ngx-translate-module-loader.svg)](https://github.com/larscom/ngx-translate-module-loader/blob/master/LICENSE)
 
-A loader for [@ngx-translate/core](https://github.com/ngx-translate/core) that loads multiple translations using http.
+Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core). Fetch multiple translations (http only)
 
 Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other.
-
-If desired, namespacing can be disabled or modified to your own needs.
+If desired, namespacing can be disabled or you can provide your own value.
 
 ## Demo
 
@@ -91,9 +90,9 @@ export function ModuleHttpLoaderFactory(http: HttpClient) {
     modules: [
       // no namespace
       { moduleName: null, baseTranslateUrl, fileType },
-      // nameSpace: feature1
+      // nameSpace: FEATURE1
       { moduleName: 'feature1', baseTranslateUrl, fileType },
-      // nameSpace: feature2
+      // nameSpace: FEATURE2
       { moduleName: 'feature2', baseTranslateUrl, fileType }
     ]
   };

@@ -1,5 +1,5 @@
+import { Translation } from '../types/translation';
 import { IModuleTranslation } from './module-translation';
-import { Translation } from './translation';
 
 export interface IModuleTranslationOptions {
   /**

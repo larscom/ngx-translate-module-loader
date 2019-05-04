@@ -4,8 +4,8 @@ import merge from 'deepmerge';
 import { forkJoin as ForkJoin, MonoTypeOperatorFunction, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { IModuleTranslationOptions } from './models/module-translation-options';
-import { Translation } from './models/translation';
+import { IModuleTranslationOptions } from './interfaces/module-translation-options';
+import { Translation } from './types/translation';
 
 export class ModuleTranslateLoader implements TranslateLoader {
   private _defaultOptions: IModuleTranslationOptions = {

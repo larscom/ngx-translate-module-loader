@@ -6,11 +6,10 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
-
-import { FileType } from '../src/models/file-type';
-import { IModuleTranslationOptions } from '../src/models/module-translation-options';
-import { Translation } from '../src/models/translation';
+import { FileType } from '../src/enums/file-type';
+import { IModuleTranslationOptions } from '../src/interfaces/module-translation-options';
 import { ModuleTranslateLoader } from '../src/module-translate-loader';
+import { Translation } from '../src/types/translation';
 
 describe('ModuleTranslateLoader', () => {
   let httpMock: HttpTestingController;
@@ -428,7 +427,7 @@ describe('ModuleTranslateLoader', () => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
       modulePathTemplate: '{baseTranslateUrl}/{language}/{moduleName}{fileType}',
-      pathTemplate: '{baseTranslateUrl}/{language}{fileType}',
+      pathTemplate: '{baseTranslateUrl}/{language}{fileType}'
     };
 
     const language = 'en';
@@ -450,8 +449,8 @@ describe('ModuleTranslateLoader', () => {
     options.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
       const path =
         moduleName == null
-        ? `${baseTranslateUrl}/${language}${fileType}`
-        : `${baseTranslateUrl}/${language}/${moduleName}${fileType}`;
+          ? `${baseTranslateUrl}/${language}${fileType}`
+          : `${baseTranslateUrl}/${language}/${moduleName}${fileType}`;
 
       const mock = httpMock.expectOne(path);
       expect(mock.request.method).toEqual('GET');
