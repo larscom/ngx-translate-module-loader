@@ -6,10 +6,10 @@ export interface IModuleTranslation {
    * The module name
    *
    * For example: shared
-   * @description set moduleName to null if you have a translate file at baseTranslateUrl level
+   * @description omit moduleName or set to null if you have a translate file at baseTranslateUrl level
    * @see baseTranslateUrl
    */
-  moduleName: string;
+  moduleName?: string;
   /**
    * The base translate URL
    *

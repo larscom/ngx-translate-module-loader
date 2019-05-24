@@ -17,7 +17,6 @@ describe('ModuleTranslateLoader', () => {
   const defaultOptions: IModuleTranslationOptions = {
     modules: [
       {
-        moduleName: null,
         baseTranslateUrl: './assets/i18n',
         fileType: FileType.JSON
       },

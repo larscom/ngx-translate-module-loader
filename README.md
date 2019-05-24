@@ -1,7 +1,6 @@
 # @larscom/ngx-translate-module-loader
 
 [![npm-release](https://img.shields.io/npm/v/@larscom/ngx-translate-module-loader.svg?label=npm%20release)](https://www.npmjs.com/package/@larscom/ngx-translate-module-loader)
-[![git-release](https://img.shields.io/github/tag/larscom/ngx-translate-module-loader.svg?label=git%20release)](https://www.npmjs.com/package/@larscom/ngx-translate-module-loader)
 [![travis build](https://img.shields.io/travis/com/larscom/ngx-translate-module-loader/master.svg?label=build%20%28master%29)](https://travis-ci.com/larscom/ngx-translate-module-loader/builds)
 [![license](https://img.shields.io/npm/l/@larscom/ngx-translate-module-loader.svg)](https://github.com/larscom/ngx-translate-module-loader/blob/master/LICENSE)
 
@@ -48,7 +47,7 @@ export function ModuleHttpLoaderFactory(http: HttpClient) {
   const options: IModuleTranslationOptions = {
     modules: [
       // final url: ./assets/i18n/en.json
-      { moduleName: null, baseTranslateUrl, fileType },
+      { baseTranslateUrl, fileType },
       // final url: ./assets/i18n/feature1/en.json
       { moduleName: 'feature1', baseTranslateUrl, fileType },
       // final url: ./assets/i18n/feature2/en.json
@@ -88,8 +87,8 @@ export function ModuleHttpLoaderFactory(http: HttpClient) {
 
   const options: IModuleTranslationOptions = {
     modules: [
-      // no namespace
-      { moduleName: null, baseTranslateUrl, fileType },
+      // no moduleName/namespace
+      { baseTranslateUrl, fileType },
       // nameSpace: FEATURE1
       { moduleName: 'feature1', baseTranslateUrl, fileType },
       // nameSpace: FEATURE2
@@ -180,10 +179,10 @@ export interface IModuleTranslation {
    * The module name
    *
    * For example: shared
-   * @description set moduleName to null if you have a translate file at baseTranslateUrl level
+   * @description omit moduleName or set to null if you have a translate file at baseTranslateUrl level
    * @see baseTranslateUrl
    */
-  moduleName: string;
+  moduleName?: string;
   /**
    * The base translate URL
    *
