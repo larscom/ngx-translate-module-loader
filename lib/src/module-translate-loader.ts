@@ -8,7 +8,8 @@ import { IModuleTranslationOptions } from './interfaces/module-translation-optio
 import { Translation } from './types/translation';
 
 export class ModuleTranslateLoader implements TranslateLoader {
-  private _defaultOptions: IModuleTranslationOptions = {
+  private readonly _pathTemplateRx: RegExp = /{([^}]+)}/gi;
+  private readonly _defaultOptions: IModuleTranslationOptions = {
     enableNamespacing: true,
     nameSpaceUppercase: true,
     deepMerge: true,
@@ -16,8 +17,6 @@ export class ModuleTranslateLoader implements TranslateLoader {
     pathTemplate: '{baseTranslateUrl}/{language}{fileType}',
     ...this.options
   };
-
-  private _pathTemplateRx: RegExp = /{([^}]+)}/gi;
 
   /**
    * The ModuleTranslateLoader for 'ngx-translate/core'

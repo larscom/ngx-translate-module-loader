@@ -14,5 +14,5 @@
     "lib": ["es2018", "dom"],
     "baseUrl": "./"
   },
-  "files": ["lib/public_api.ts"]
+  "files": ["lib/src/public_api.ts"]
 }
