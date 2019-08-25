@@ -6,10 +6,11 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
-import { FileType } from '../src/enums/file-type';
-import { IModuleTranslationOptions } from '../src/interfaces/module-translation-options';
+
+import { FileType } from '../src/models/file-type';
+import { IModuleTranslationOptions } from '../src/models/module-translation-options';
+import { Translation } from '../src/models/translation';
 import { ModuleTranslateLoader } from '../src/module-translate-loader';
-import { Translation } from '../src/types/translation';
 
 describe('ModuleTranslateLoader', () => {
   let httpMock: HttpTestingController;

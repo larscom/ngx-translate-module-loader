@@ -1,5 +1,5 @@
-import { FileType } from '../enums/file-type';
-import { Translation } from '../types/translation';
+import { FileType } from '../models/file-type';
+import { Translation } from '../models/translation';
 
 export interface IModuleTranslation {
   /**

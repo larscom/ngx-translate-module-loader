@@ -1,4 +1,4 @@
-import { Translation } from '../types/translation';
+import { Translation } from '../models/translation';
 import { IModuleTranslation } from './module-translation';
 
 export interface IModuleTranslationOptions {

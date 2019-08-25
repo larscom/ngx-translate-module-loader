@@ -4,12 +4,12 @@ import merge from 'deepmerge';
 import { forkJoin as ForkJoin, MonoTypeOperatorFunction, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { IModuleTranslationOptions } from './interfaces/module-translation-options';
-import { Translation } from './types/translation';
+import { IModuleTranslationOptions } from './models/module-translation-options';
+import { Translation } from './models/translation';
 
 export class ModuleTranslateLoader implements TranslateLoader {
-  private readonly _pathTemplateRx: RegExp = /{([^}]+)}/gi;
-  private readonly _defaultOptions: IModuleTranslationOptions = {
+  private readonly pathTemplateRx: RegExp = /{([^}]+)}/gi;
+  private readonly defaultOptions: IModuleTranslationOptions = {
     enableNamespacing: true,
     nameSpaceUppercase: true,
     deepMerge: true,
@@ -43,25 +43,25 @@ export class ModuleTranslateLoader implements TranslateLoader {
       translateMerger,
       pathTemplate,
       modulePathTemplate
-    } = this._defaultOptions;
+    } = this.defaultOptions;
 
     const moduleRequests = modules.map(
       ({ baseTranslateUrl, moduleName, fileType, nameSpace, translateMap }) => {
         if (!moduleName) {
           const pathOptions = { baseTranslateUrl, language, fileType };
           const path = pathTemplate.replace(
-            this._pathTemplateRx,
+            this.pathTemplateRx,
             (_, m1: string) => pathOptions[m1] || ''
           );
           return this.http.get<Translation>(path).pipe(
             map(translation => (translateMap ? translateMap(translation) : translation)),
-            this._catchError(path, translateError)
+            this.catchError(path, translateError)
           );
         }
 
         const modulePathOptions = { baseTranslateUrl, moduleName, language, fileType };
         const modulePath = modulePathTemplate.replace(
-          this._pathTemplateRx,
+          this.pathTemplateRx,
           (_, m1: string) => modulePathOptions[m1] || ''
         );
         return this.http.get<Translation>(modulePath).pipe(
@@ -84,7 +84,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
 
             return Object({ [key]: translation }) as Translation;
           }),
-          this._catchError(modulePath, translateError)
+          this.catchError(modulePath, translateError)
         );
       }
     );
@@ -101,10 +101,10 @@ export class ModuleTranslateLoader implements TranslateLoader {
     );
   }
 
-  private _catchError = <T>(
+  private catchError<T>(
     path: string,
     translateError?: (error: any, path: string) => void
-  ): MonoTypeOperatorFunction<T> => {
+  ): MonoTypeOperatorFunction<T> {
     return catchError(e => {
       if (translateError) {
         translateError(e, path);
@@ -113,5 +113,5 @@ export class ModuleTranslateLoader implements TranslateLoader {
       console.error('Unable to load translation file:', path);
       return of(Object());
     });
-  };
+  }
 }

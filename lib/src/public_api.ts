@@ -1,5 +1,5 @@
-export { FileType } from './enums/file-type';
-export { IModuleTranslation } from './interfaces/module-translation';
-export { IModuleTranslationOptions } from './interfaces/module-translation-options';
-export { Translation } from './types/translation';
+export { FileType } from './models/file-type';
+export { IModuleTranslation } from './models/module-translation';
+export { IModuleTranslationOptions } from './models/module-translation-options';
+export { Translation } from './models/translation';
 export { ModuleTranslateLoader } from './module-translate-loader';
