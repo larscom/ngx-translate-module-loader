@@ -1,12 +1,12 @@
-import { FileType } from '../models/file-type';
-import { Translation } from '../models/translation';
+import { FileType } from './file-type';
+import { Translation } from './translation';
 
 export interface IModuleTranslation {
   /**
    * The module name
    *
    * For example: shared
-   * @description omit moduleName or set to null if you have a translate file at baseTranslateUrl level
+   * @description omit moduleName if you have a translate file at baseTranslateUrl level
    * @see baseTranslateUrl
    */
   moduleName?: string;

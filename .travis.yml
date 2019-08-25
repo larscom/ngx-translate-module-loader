@@ -1,15 +1,20 @@
 language: node_js
 node_js:
-  - "10"
+  - '10'
+branches:
+  only:
+    - master
+    - /^v\d+\.\d+\.\d+$/
 script:
-  - npm run lint
-  - npm run test
+  - npm run test -- --code-coverage --watch=false
 before_deploy:
-  - npm run build
+  - npm run build:lib
+  - npm run copy:readme
+  - cd dist/ngx-translate-module-loader
 deploy:
-    provider: npm
-    email: "$NPM_EMAIL"
-    api_key: "$NPM_API_TOKEN"
-    skip_cleanup: true
-    on:
-      tags: true
+  provider: npm
+  email: '$NPM_EMAIL'
+  api_key: '$NPM_API_TOKEN'
+  skip_cleanup: true
+  on:
+    tags: true

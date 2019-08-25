@@ -6,11 +6,12 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
+import { isEqual } from 'lodash';
 
-import { FileType } from '../src/models/file-type';
-import { IModuleTranslationOptions } from '../src/models/module-translation-options';
-import { Translation } from '../src/models/translation';
-import { ModuleTranslateLoader } from '../src/module-translate-loader';
+import { FileType } from '../src/lib/models/file-type';
+import { IModuleTranslationOptions } from '../src/lib/models/module-translation-options';
+import { Translation } from '../src/lib/models/translation';
+import { ModuleTranslateLoader } from '../src/lib/module-translate-loader';
 
 describe('ModuleTranslateLoader', () => {
   let httpMock: HttpTestingController;
@@ -96,7 +97,7 @@ describe('ModuleTranslateLoader', () => {
         FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
-      expect(translation).toEqual(expected);
+      expect(isEqual(translation, expected)).toBe(true);
       done();
     });
 
@@ -147,7 +148,7 @@ describe('ModuleTranslateLoader', () => {
         CUSTOM2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
-      expect(translation).toEqual(expected);
+      expect(isEqual(translation, expected)).toBe(true);
       done();
     });
 
@@ -202,7 +203,8 @@ describe('ModuleTranslateLoader', () => {
           }
         }
       };
-      expect(translation).toEqual(expected);
+
+      expect(isEqual(translation, expected)).toBe(true);
       done();
     });
 
@@ -269,7 +271,8 @@ describe('ModuleTranslateLoader', () => {
           }
         }
       };
-      expect(translation).toEqual(expected);
+
+      expect(isEqual(translation, expected)).toBe(true);
       done();
     });
 
@@ -312,7 +315,8 @@ describe('ModuleTranslateLoader', () => {
           }
         }
       };
-      expect(translation).toEqual(expected);
+
+      expect(isEqual(translation, expected)).toBe(true);
       done();
     });
 
@@ -355,7 +359,8 @@ describe('ModuleTranslateLoader', () => {
           }
         }
       };
-      expect(translation).toEqual(expected);
+
+      expect(isEqual(translation, expected)).toBe(true);
       done();
     });
 
@@ -379,7 +384,7 @@ describe('ModuleTranslateLoader', () => {
       deepMerge: false,
       translateError: (error, path) => {
         expect(path).toEqual('./assets/i18n/en.json');
-        expect(error).toBeInstanceOf(HttpErrorResponse);
+        expect(error instanceof HttpErrorResponse).toBe(true);
       }
     };
 
@@ -401,7 +406,8 @@ describe('ModuleTranslateLoader', () => {
           }
         }
       };
-      expect(translation).toEqual(expected);
+
+      expect(isEqual(translation, expected)).toBe(true);
       done();
     });
 
@@ -442,7 +448,8 @@ describe('ModuleTranslateLoader', () => {
         FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
         FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
-      expect(translation).toEqual(expected);
+
+      expect(isEqual(translation, expected)).toBe(true);
       done();
     });
 

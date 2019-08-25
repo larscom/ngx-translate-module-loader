@@ -40,7 +40,7 @@ import {
 } from '@larscom/ngx-translate-module-loader';
 import { AppComponent } from './app';
 
-export function ModuleHttpLoaderFactory(http: HttpClient) {
+export function moduleHttpLoaderFactory(http: HttpClient) {
   const fileType = FileType.JSON;
   const baseTranslateUrl = './assets/i18n';
 
@@ -64,7 +64,7 @@ export function ModuleHttpLoaderFactory(http: HttpClient) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: ModuleHttpLoaderFactory,
+        useFactory: moduleHttpLoaderFactory,
         deps: [HttpClient]
       }
     })
@@ -81,7 +81,7 @@ By default, each translation file gets it's own namespace based on the `moduleNa
 For example with these options:
 
 ```ts
-export function ModuleHttpLoaderFactory(http: HttpClient) {
+export function moduleHttpLoaderFactory(http: HttpClient) {
   const fileType = FileType.JSON;
   const baseTranslateUrl = './assets/i18n';
 
@@ -136,17 +136,14 @@ export interface IModuleTranslationOptions {
   modules: IModuleTranslation[];
   /**
    * Each module gets its own namespace so it doesn't conflict with other modules
-   * @default enableNamespacing true
    */
   enableNamespacing?: boolean;
   /**
    * Create namespaces in Uppercase if namespacing is enabled
-   * @default nameSpaceUppercase true
    */
   nameSpaceUppercase?: boolean;
   /**
    * Perform a deepmerge when merging translation files
-   * @default deepMerge true
    */
   deepMerge?: boolean;
   /**
@@ -162,12 +159,14 @@ export interface IModuleTranslationOptions {
   translateMerger?: (translations: Translation[]) => Translation;
   /**
    * Custom module path template for fetching translations
-   * @default modulePathTemplate '{baseTranslateUrl}/{moduleName}/{language}{fileType}'
+   * @example
+   * '{baseTranslateUrl}/{moduleName}/{language}{fileType}'
    */
   modulePathTemplate?: string;
   /**
    * Custom path template for fetching translations
-   * @default pathTemplate '{baseTranslateUrl}/{language}{fileType}'
+   * @example
+   * '{baseTranslateUrl}/{language}{fileType}'
    */
   pathTemplate?: string;
 }
@@ -179,7 +178,7 @@ export interface IModuleTranslation {
    * The module name
    *
    * For example: shared
-   * @description omit moduleName or set to null if you have a translate file at baseTranslateUrl level
+   * @description omit moduleName if you have a translate file at baseTranslateUrl level
    * @see baseTranslateUrl
    */
   moduleName?: string;
@@ -206,6 +205,6 @@ export interface IModuleTranslation {
    * Custom translation map function after retrieving a translation file
    * @param translation the resolved translation file
    */
-  translationMap?: (translation: Translation) => Translation;
+  translateMap?: (translation: Translation) => Translation;
 }
 ```

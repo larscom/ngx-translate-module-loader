@@ -1,5 +1,5 @@
-import { Translation } from '../models/translation';
 import { IModuleTranslation } from './module-translation';
+import { Translation } from './translation';
 
 export interface IModuleTranslationOptions {
   /**
@@ -8,17 +8,14 @@ export interface IModuleTranslationOptions {
   modules: IModuleTranslation[];
   /**
    * Each module gets its own namespace so it doesn't conflict with other modules
-   * @default enableNamespacing true
    */
   enableNamespacing?: boolean;
   /**
    * Create namespaces in Uppercase if namespacing is enabled
-   * @default nameSpaceUppercase true
    */
   nameSpaceUppercase?: boolean;
   /**
    * Perform a deepmerge when merging translation files
-   * @default deepMerge true
    */
   deepMerge?: boolean;
   /**
@@ -34,12 +31,14 @@ export interface IModuleTranslationOptions {
   translateMerger?: (translations: Translation[]) => Translation;
   /**
    * Custom module path template for fetching translations
-   * @default modulePathTemplate '{baseTranslateUrl}/{moduleName}/{language}{fileType}'
+   * @example
+   * '{baseTranslateUrl}/{moduleName}/{language}{fileType}'
    */
   modulePathTemplate?: string;
   /**
    * Custom path template for fetching translations
-   * @default pathTemplate '{baseTranslateUrl}/{language}{fileType}'
+   * @example
+   * '{baseTranslateUrl}/{language}{fileType}'
    */
   pathTemplate?: string;
 }
