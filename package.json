@@ -66,5 +66,8 @@
   },
   "dependencies": {
     "deepmerge": "^3.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
