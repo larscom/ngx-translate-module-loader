@@ -26,7 +26,7 @@ npm i --save @larscom/ngx-translate-module-loader
 
 ## Usage
 
-**1. create an exported `ModuleHttpLoaderFactory` function**
+**1. create an exported `moduleHttpLoaderFactory` function**
 
 ```ts
 import { NgModule } from '@angular/core';
