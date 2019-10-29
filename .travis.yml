@@ -5,8 +5,15 @@ branches:
   only:
     - master
     - /^v\d+\.\d+\.\d+$/
+before_install:
+  - if [[ $TRAVIS_COMMIT_MESSAGE == *"[Travis]"* ]] && [ -z $TRAVIS_TAG ]; then travis_terminate 0; fi
+install:
+  - npm ci
 script:
   - npm run test -- --code-coverage --watch=false
+after_script:
+  - chmod +x .travis/update-version.sh
+  - .travis/update-version.sh
 before_deploy:
   - npm run build:lib
   - npm run copy:readme
