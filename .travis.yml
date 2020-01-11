@@ -12,8 +12,8 @@ install:
 script:
   - npm run test -- --code-coverage --watch=false
 after_script:
-  - chmod +x .travis/update-version.sh
-  - .travis/update-version.sh
+  - chmod +x scripts/update-version.sh
+  - scripts/update-version.sh
 before_deploy:
   - npm run build:lib
   - npm run copy:readme
