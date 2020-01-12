@@ -2,12 +2,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
+import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 import { isEqual } from 'lodash';
-
 import { FileType } from '../src/lib/models/file-type';
 import { IModuleTranslationOptions } from '../src/lib/models/module-translation-options';
 import { Translation } from '../src/lib/models/translation';
@@ -432,8 +428,8 @@ describe('ModuleTranslateLoader', () => {
   it('should load from custom path templates', done => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
-      modulePathTemplate: '{baseTranslateUrl}/{language}/{moduleName}{fileType}',
-      pathTemplate: '{baseTranslateUrl}/{language}{fileType}'
+      pathTemplate: '{baseTranslateUrl}/{language}{fileType}',
+      modulePathTemplate: '{baseTranslateUrl}/{language}/{moduleName}{fileType}'
     };
 
     const language = 'en';
@@ -458,6 +454,43 @@ describe('ModuleTranslateLoader', () => {
         moduleName == null
           ? `${baseTranslateUrl}/${language}${fileType}`
           : `${baseTranslateUrl}/${language}/${moduleName}${fileType}`;
+
+      const mock = httpMock.expectOne(path);
+      expect(mock.request.method).toEqual('GET');
+
+      mock.flush(mockTranslation);
+    });
+  });
+
+  it('should load from custom path templates 2', done => {
+    const options: IModuleTranslationOptions = {
+      ...defaultOptions,
+      pathTemplate: '{baseTranslateUrl}/test-path/{language}{fileType}',
+      modulePathTemplate: '{baseTranslateUrl}/test-path/{language}/{moduleName}{fileType}'
+    };
+
+    const language = 'en';
+
+    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+
+    loader.getTranslation(language).subscribe(translation => {
+      const expected = {
+        key: 'value',
+        key1: 'value1',
+        parent: { child: { grandChild: 'value1' } },
+        FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+        FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+      };
+
+      expect(isEqual(translation, expected)).toBe(true);
+      done();
+    });
+
+    options.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+      const path =
+        moduleName == null
+          ? `${baseTranslateUrl}/test-path/${language}${fileType}`
+          : `${baseTranslateUrl}/test-path/${language}/${moduleName}${fileType}`;
 
       const mock = httpMock.expectOne(path);
       expect(mock.request.method).toEqual('GET');

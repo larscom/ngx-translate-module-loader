@@ -208,3 +208,20 @@ export interface IModuleTranslation {
   translateMap?: (translation: Translation) => Translation;
 }
 ```
+## Examples
+
+### Custom templates for fetching translations
+
+By default, module translations gets fetched by using the following template:
+
+`'{baseTranslateUrl}/{moduleName}/{language}{fileType}'` e.g.: ./assets/feature1/en.json
+
+You can override this option if you wish to do so:
+
+```ts
+    const options: IModuleTranslationOptions = {
+      ...
+      // translates to: ./assets/en/feature1.json
+      modulePathTemplate: '{baseTranslateUrl}/{language}/{moduleName}{fileType}'
+    };
+```
