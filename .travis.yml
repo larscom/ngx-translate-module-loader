@@ -8,7 +8,6 @@ before_script:
 script:
   - npm run test -- --code-coverage --watch=false
 before_deploy:
-  - npm run copy:readme
   - cd dist/ngx-translate-module-loader
 deploy:
   provider: npm
