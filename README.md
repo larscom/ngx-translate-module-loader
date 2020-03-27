@@ -1,13 +1,12 @@
 # @larscom/ngx-translate-module-loader
 
-[![npm-release](https://img.shields.io/npm/v/@larscom/ngx-translate-module-loader.svg?label=npm%20release)](https://www.npmjs.com/package/@larscom/ngx-translate-module-loader)
-[![travis build](https://img.shields.io/travis/com/larscom/ngx-translate-module-loader/master.svg?label=build%20%28master%29)](https://travis-ci.com/larscom/ngx-translate-module-loader/builds)
+[![npm-release](https://img.shields.io/npm/v/@larscom/ngx-translate-module-loader.svg?label=npm)](https://www.npmjs.com/package/@larscom/ngx-translate-module-loader)
+[![@larscom/ngx-translate-module-loader](https://github.com/larscom/ngx-translate-module-loader/workflows/@larscom/ngx-translate-module-loader/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader)
 [![license](https://img.shields.io/npm/l/@larscom/ngx-translate-module-loader.svg)](https://github.com/larscom/ngx-translate-module-loader/blob/master/LICENSE)
 
 Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core). Fetch multiple translations (http only)
 
-Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other.
-If desired, namespacing can be disabled or you can provide your own value.
+Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other. Namespacing can be disabled or you can provide your own value.
 
 ## Demo
 
@@ -33,11 +32,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import {
-  FileType,
-  ModuleTranslateLoader,
-  IModuleTranslationOptions
-} from '@larscom/ngx-translate-module-loader';
+import { FileType, ModuleTranslateLoader, IModuleTranslationOptions } from '@larscom/ngx-translate-module-loader';
 import { AppComponent } from './app';
 
 export function moduleHttpLoaderFactory(http: HttpClient) {
@@ -208,6 +203,7 @@ export interface IModuleTranslation {
   translateMap?: (translation: Translation) => Translation;
 }
 ```
+
 ## Examples
 
 ### Custom templates for fetching translations
