@@ -75,6 +75,12 @@ describe('ModuleTranslateLoader', () => {
     httpMock.verify();
   });
 
+  it('should give back a url ending with .json', () => {
+    const path = './assets/feature1/en';
+    const expected = path.concat('.json');
+    expect(createJsonPath(path)).toEqual(expected);
+  });
+
   it('should load the english translation from different modules with default configuration', done => {
     const language = 'en';
 
