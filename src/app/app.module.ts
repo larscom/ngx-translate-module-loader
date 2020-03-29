@@ -3,14 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import {
-  FileType,
-  ModuleTranslateLoader,
-  IModuleTranslationOptions
-} from '@larscom/ngx-translate-module-loader';
+import { ModuleTranslateLoader, IModuleTranslationOptions } from '@larscom/ngx-translate-module-loader';
 
 export function ModuleHttpLoaderFactory(http: HttpClient) {
-  const fileType = FileType.JSON;
   const baseTranslateUrl = './assets/i18n';
 
   const options: IModuleTranslationOptions = {
@@ -19,11 +14,11 @@ export function ModuleHttpLoaderFactory(http: HttpClient) {
     },
     modules: [
       // final url: ./assets/i18n/en.json
-      { baseTranslateUrl, fileType },
+      { baseTranslateUrl },
       // final url: ./assets/i18n/feature1/en.json
-      { moduleName: 'feature1', baseTranslateUrl, fileType },
+      { moduleName: 'feature1', baseTranslateUrl },
       // final url: ./assets/i18n/feature2/en.json
-      { moduleName: 'feature2', baseTranslateUrl, fileType }
+      { moduleName: 'feature2', baseTranslateUrl }
     ]
   };
   return new ModuleTranslateLoader(http, options);

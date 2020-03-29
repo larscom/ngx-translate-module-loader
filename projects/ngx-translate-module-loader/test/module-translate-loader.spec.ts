@@ -1,13 +1,12 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 import { isEqual } from 'lodash';
-import { FileType } from '../src/lib/models/file-type';
 import { IModuleTranslationOptions } from '../src/lib/models/module-translation-options';
 import { Translation } from '../src/lib/models/translation';
-import { ModuleTranslateLoader } from '../src/lib/module-translate-loader';
+import { createJsonPath, ModuleTranslateLoader } from '../src/lib/module-translate-loader';
 
 describe('ModuleTranslateLoader', () => {
   let httpMock: HttpTestingController;
@@ -15,18 +14,15 @@ describe('ModuleTranslateLoader', () => {
   const defaultOptions: IModuleTranslationOptions = {
     modules: [
       {
-        baseTranslateUrl: './assets/i18n',
-        fileType: FileType.JSON
+        baseTranslateUrl: './assets/i18n'
       },
       {
         moduleName: 'feature1',
-        baseTranslateUrl: './assets/i18n',
-        fileType: FileType.JSON
+        baseTranslateUrl: './assets/i18n'
       },
       {
         moduleName: 'feature2',
-        baseTranslateUrl: './assets/i18n',
-        fileType: FileType.JSON
+        baseTranslateUrl: './assets/i18n'
       }
     ]
   };
@@ -72,7 +68,7 @@ describe('ModuleTranslateLoader', () => {
       imports: [HttpClientTestingModule],
       schemas: [NO_ERRORS_SCHEMA]
     });
-    httpMock = TestBed.get(HttpTestingController);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
@@ -82,7 +78,7 @@ describe('ModuleTranslateLoader', () => {
   it('should load the english translation from different modules with default configuration', done => {
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), defaultOptions);
+    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), defaultOptions);
 
     loader.getTranslation(language).subscribe(translation => {
       const expected = {
@@ -97,13 +93,11 @@ describe('ModuleTranslateLoader', () => {
       done();
     });
 
-    defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+    defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path =
-        moduleName == null
-          ? `${baseTranslateUrl}/${language}${fileType}`
-          : `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
+        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
 
-      const mock = httpMock.expectOne(path);
+      const mock = createTestRequest(path);
       expect(mock.request.method).toEqual('GET');
       mock.flush(mockTranslation);
     });
@@ -114,26 +108,23 @@ describe('ModuleTranslateLoader', () => {
       modules: [
         {
           moduleName: null,
-          baseTranslateUrl: './assets/i18n',
-          fileType: FileType.JSON
+          baseTranslateUrl: './assets/i18n'
         },
         {
           moduleName: 'feature1',
           nameSpace: 'custom1',
-          baseTranslateUrl: './assets/i18n',
-          fileType: FileType.JSON
+          baseTranslateUrl: './assets/i18n'
         },
         {
           moduleName: 'feature2',
           nameSpace: 'custom2',
-          baseTranslateUrl: './assets/i18n',
-          fileType: FileType.JSON
+          baseTranslateUrl: './assets/i18n'
         }
       ]
     };
 
     const language = 'en';
-    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
     loader.getTranslation(language).subscribe(translation => {
       const expected = {
@@ -148,13 +139,11 @@ describe('ModuleTranslateLoader', () => {
       done();
     });
 
-    defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+    defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path =
-        moduleName == null
-          ? `${baseTranslateUrl}/${language}${fileType}`
-          : `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
+        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
 
-      const mock = httpMock.expectOne(path);
+      const mock = createTestRequest(path);
       expect(mock.request.method).toEqual('GET');
       mock.flush(mockTranslation);
     });
@@ -170,7 +159,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
     loader.getTranslation(language).subscribe(translation => {
       const expected = {
@@ -204,13 +193,11 @@ describe('ModuleTranslateLoader', () => {
       done();
     });
 
-    options.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+    options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path =
-        moduleName == null
-          ? `${baseTranslateUrl}/${language}${fileType}`
-          : `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
+        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
 
-      const mock = httpMock.expectOne(path);
+      const mock = createTestRequest(path);
       expect(mock.request.method).toEqual('GET');
       const response = moduleName == null ? mockTranslation : moduleMockTranslations[moduleName];
       mock.flush(response);
@@ -224,7 +211,6 @@ describe('ModuleTranslateLoader', () => {
         {
           moduleName: null,
           baseTranslateUrl: './assets/i18n',
-          fileType: FileType.JSON,
           translateMap: (translation: Translation) => {
             return Object.keys(translation).reduce((acc, curr) => {
               return {
@@ -237,7 +223,6 @@ describe('ModuleTranslateLoader', () => {
         {
           moduleName: 'feature1',
           baseTranslateUrl: './assets/i18n',
-          fileType: FileType.JSON,
           translateMap: (translation: Translation) => {
             return Object.keys(translation).reduce((acc, curr) => {
               return {
@@ -252,7 +237,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
     loader.getTranslation(language).subscribe(translation => {
       const expected = {
@@ -272,13 +257,11 @@ describe('ModuleTranslateLoader', () => {
       done();
     });
 
-    options.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+    options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path =
-        moduleName == null
-          ? `${baseTranslateUrl}/${language}${fileType}`
-          : `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
+        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
 
-      const mock = httpMock.expectOne(path);
+      const mock = createTestRequest(path);
       expect(mock.request.method).toEqual('GET');
       const response = moduleName == null ? mockTranslation : moduleMockTranslations[moduleName];
       mock.flush(response);
@@ -293,7 +276,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
     loader.getTranslation(language).subscribe(translation => {
       const expected = {
@@ -316,13 +299,11 @@ describe('ModuleTranslateLoader', () => {
       done();
     });
 
-    options.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+    options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path =
-        moduleName == null
-          ? `${baseTranslateUrl}/${language}${fileType}`
-          : `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
+        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
 
-      const mock = httpMock.expectOne(path);
+      const mock = createTestRequest(path);
       expect(mock.request.method).toEqual('GET');
       const response = moduleName == null ? mockTranslation : moduleMockTranslations[moduleName];
       mock.flush(response);
@@ -338,7 +319,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
     loader.getTranslation(language).subscribe(translation => {
       const expected = {
@@ -360,13 +341,11 @@ describe('ModuleTranslateLoader', () => {
       done();
     });
 
-    options.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+    options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path =
-        moduleName == null
-          ? `${baseTranslateUrl}/${language}${fileType}`
-          : `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
+        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
 
-      const mock = httpMock.expectOne(path);
+      const mock = createTestRequest(path);
       expect(mock.request.method).toEqual('GET');
       const response = moduleName == null ? mockTranslation : moduleMockTranslations[moduleName];
       mock.flush(response);
@@ -386,7 +365,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
     loader.getTranslation(language).subscribe(translation => {
       const expected = {
@@ -407,13 +386,11 @@ describe('ModuleTranslateLoader', () => {
       done();
     });
 
-    options.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+    options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path =
-        moduleName == null
-          ? `${baseTranslateUrl}/${language}${fileType}`
-          : `${baseTranslateUrl}/${moduleName}/${language}${fileType}`;
+        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
 
-      const mock = httpMock.expectOne(path);
+      const mock = createTestRequest(path);
       expect(mock.request.method).toEqual('GET');
 
       const response = moduleName == null ? mockTranslation : moduleMockTranslations[moduleName];
@@ -428,13 +405,13 @@ describe('ModuleTranslateLoader', () => {
   it('should load from custom path templates', done => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
-      pathTemplate: '{baseTranslateUrl}/{language}{fileType}',
-      modulePathTemplate: '{baseTranslateUrl}/{language}/{moduleName}{fileType}'
+      pathTemplate: '{baseTranslateUrl}/{language}',
+      modulePathTemplate: '{baseTranslateUrl}/{language}/{moduleName}'
     };
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
     loader.getTranslation(language).subscribe(translation => {
       const expected = {
@@ -449,13 +426,11 @@ describe('ModuleTranslateLoader', () => {
       done();
     });
 
-    options.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+    options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path =
-        moduleName == null
-          ? `${baseTranslateUrl}/${language}${fileType}`
-          : `${baseTranslateUrl}/${language}/${moduleName}${fileType}`;
+        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${language}/${moduleName}`;
 
-      const mock = httpMock.expectOne(path);
+      const mock = createTestRequest(path);
       expect(mock.request.method).toEqual('GET');
 
       mock.flush(mockTranslation);
@@ -465,13 +440,13 @@ describe('ModuleTranslateLoader', () => {
   it('should load from custom path templates 2', done => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
-      pathTemplate: '{baseTranslateUrl}/test-path/{language}{fileType}',
-      modulePathTemplate: '{baseTranslateUrl}/test-path/{language}/{moduleName}{fileType}'
+      pathTemplate: '{baseTranslateUrl}/test-path/{language}',
+      modulePathTemplate: '{baseTranslateUrl}/test-path/{language}/{moduleName}'
     };
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.get(HttpClient), options);
+    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
     loader.getTranslation(language).subscribe(translation => {
       const expected = {
@@ -486,16 +461,20 @@ describe('ModuleTranslateLoader', () => {
       done();
     });
 
-    options.modules.forEach(({ baseTranslateUrl, moduleName, fileType }) => {
+    options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path =
         moduleName == null
-          ? `${baseTranslateUrl}/test-path/${language}${fileType}`
-          : `${baseTranslateUrl}/test-path/${language}/${moduleName}${fileType}`;
+          ? `${baseTranslateUrl}/test-path/${language}`
+          : `${baseTranslateUrl}/test-path/${language}/${moduleName}`;
 
-      const mock = httpMock.expectOne(path);
+      const mock = createTestRequest(path);
       expect(mock.request.method).toEqual('GET');
 
       mock.flush(mockTranslation);
     });
   });
+
+  function createTestRequest(path: string): TestRequest {
+    return httpMock.expectOne(createJsonPath(path));
+  }
 });

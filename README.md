@@ -32,21 +32,20 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { FileType, ModuleTranslateLoader, IModuleTranslationOptions } from '@larscom/ngx-translate-module-loader';
+import { ModuleTranslateLoader, IModuleTranslationOptions } from '@larscom/ngx-translate-module-loader';
 import { AppComponent } from './app';
 
 export function moduleHttpLoaderFactory(http: HttpClient) {
-  const fileType = FileType.JSON;
   const baseTranslateUrl = './assets/i18n';
 
   const options: IModuleTranslationOptions = {
     modules: [
       // final url: ./assets/i18n/en.json
-      { baseTranslateUrl, fileType },
+      { baseTranslateUrl },
       // final url: ./assets/i18n/feature1/en.json
-      { moduleName: 'feature1', baseTranslateUrl, fileType },
+      { moduleName: 'feature1', baseTranslateUrl },
       // final url: ./assets/i18n/feature2/en.json
-      { moduleName: 'feature2', baseTranslateUrl, fileType }
+      { moduleName: 'feature2', baseTranslateUrl }
     ]
   };
   return new ModuleTranslateLoader(http, options);
@@ -77,17 +76,16 @@ For example with these options:
 
 ```ts
 export function moduleHttpLoaderFactory(http: HttpClient) {
-  const fileType = FileType.JSON;
   const baseTranslateUrl = './assets/i18n';
 
   const options: IModuleTranslationOptions = {
     modules: [
       // no moduleName/namespace
-      { baseTranslateUrl, fileType },
+      { baseTranslateUrl },
       // nameSpace: FEATURE1
-      { moduleName: 'feature1', baseTranslateUrl, fileType },
+      { moduleName: 'feature1', baseTranslateUrl },
       // nameSpace: FEATURE2
-      { moduleName: 'feature2', baseTranslateUrl, fileType }
+      { moduleName: 'feature2', baseTranslateUrl }
     ]
   };
   return new ModuleTranslateLoader(http, options);
@@ -155,13 +153,13 @@ export interface IModuleTranslationOptions {
   /**
    * Custom module path template for fetching translations
    * @example
-   * '{baseTranslateUrl}/{moduleName}/{language}{fileType}'
+   * '{baseTranslateUrl}/{moduleName}/{language}'
    */
   modulePathTemplate?: string;
   /**
    * Custom path template for fetching translations
    * @example
-   * '{baseTranslateUrl}/{language}{fileType}'
+   * '{baseTranslateUrl}/{language}'
    */
   pathTemplate?: string;
 }
@@ -186,10 +184,6 @@ export interface IModuleTranslation {
    */
   baseTranslateUrl: string;
   /**
-   * The file type of the translation file (JSON only currently)
-   */
-  fileType: FileType;
-  /**
    * By default, it uses the moduleName as nameSpace
    * @see moduleName
    *
@@ -210,7 +204,7 @@ export interface IModuleTranslation {
 
 By default, module translations gets fetched by using the following template:
 
-`'{baseTranslateUrl}/{moduleName}/{language}{fileType}'` e.g.: ./assets/feature1/en.json
+`'{baseTranslateUrl}/{moduleName}/{language}'` e.g.: ./assets/feature1/en.json
 
 You can override this option if you wish to do so:
 
@@ -218,6 +212,6 @@ You can override this option if you wish to do so:
     const options: IModuleTranslationOptions = {
       ...
       // translates to: ./assets/en/feature1.json
-      modulePathTemplate: '{baseTranslateUrl}/{language}/{moduleName}{fileType}'
+      modulePathTemplate: '{baseTranslateUrl}/{language}/{moduleName}'
     };
 ```

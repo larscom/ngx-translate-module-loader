@@ -32,13 +32,13 @@ export interface IModuleTranslationOptions {
   /**
    * Custom module path template for fetching translations
    * @example
-   * '{baseTranslateUrl}/{moduleName}/{language}{fileType}'
+   * '{baseTranslateUrl}/{moduleName}/{language}'
    */
   modulePathTemplate?: string;
   /**
    * Custom path template for fetching translations
    * @example
-   * '{baseTranslateUrl}/{language}{fileType}'
+   * '{baseTranslateUrl}/{language}'
    */
   pathTemplate?: string;
 }

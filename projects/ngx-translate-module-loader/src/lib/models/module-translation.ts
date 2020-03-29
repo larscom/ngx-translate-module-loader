@@ -1,4 +1,3 @@
-import { FileType } from './file-type';
 import { Translation } from './translation';
 
 export interface IModuleTranslation {
@@ -18,10 +17,6 @@ export interface IModuleTranslation {
    * @see moduleName
    */
   baseTranslateUrl: string;
-  /**
-   * The file type of the translation file (JSON only currently)
-   */
-  fileType: FileType;
   /**
    * By default, it uses the moduleName as nameSpace
    * @see moduleName
