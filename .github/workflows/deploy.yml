@@ -6,7 +6,7 @@ on:
     tags:
       - 'v*.*.*'
 jobs:
-  ci:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: checkout source
@@ -19,16 +19,31 @@ jobs:
         run: npm ci --ignore-scripts
       - name: build
         run: npm run build:lib
-      - name: unit test
-        run: npm run test -- --code-coverage --watch=false
       - if: startsWith(github.ref, 'refs/tags/v')
         name: upload artifact
         uses: actions/upload-artifact@master
         with:
           name: dist
           path: dist
+
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout source
+        uses: actions/checkout@v2
+      - name: setup node 10 environment
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: install
+        run: npm ci --ignore-scripts
+      - name: start unit test
+        run: npm run test -- --code-coverage --watch=false
+
   npm:
-    needs: ci
+    needs:
+      - build
+      - unit-test
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
