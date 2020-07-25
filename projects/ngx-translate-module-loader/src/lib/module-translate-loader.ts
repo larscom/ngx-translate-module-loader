@@ -44,10 +44,9 @@ export class ModuleTranslateLoader implements TranslateLoader {
   ): Observable<Translation> {
     return ForkJoin(moduleTranslations).pipe(
       map((translations) => {
-        if (translateMerger) {
-          return translateMerger(translations);
-        }
-        return deepMerge
+        return translateMerger
+          ? translateMerger(translations)
+          : deepMerge
           ? merge.all<Translation>(translations)
           : translations.reduce((acc, curr) => ({ ...acc, ...curr }), Object());
       })
