@@ -78,6 +78,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
       this.catchError(path, translateError)
     );
   }
+
   private fetchTranslationForModule(
     language: string,
     { modulePathTemplate, enableNamespacing, nameSpaceUppercase, translateError }: IModuleTranslationOptions,
