@@ -7,15 +7,15 @@ export interface IModuleTranslationOptions {
    */
   modules: IModuleTranslation[];
   /**
-   * Each module gets its own namespace so it doesn't conflict with other modules
+   * By default, each module gets its own namespace so it doesn't conflict with other modules
    */
-  enableNamespacing?: boolean;
+  disableNamespace?: boolean;
   /**
-   * Create namespaces in Uppercase if namespacing is enabled
+   * By default, namespaces are uppercase
    */
-  nameSpaceUppercase?: boolean;
+  lowercaseNamespace?: boolean;
   /**
-   * Perform a deepmerge when merging translation files
+   * By default, it'll perform a deepmerge when merging translation files
    */
   deepMerge?: boolean;
   /**

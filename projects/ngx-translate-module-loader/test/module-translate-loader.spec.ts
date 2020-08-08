@@ -6,60 +6,60 @@ import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@ang
 import { isEqual } from 'lodash';
 import { IModuleTranslationOptions } from '../src/lib/models/module-translation-options';
 import { Translation } from '../src/lib/models/translation';
-import { createJsonPath, ModuleTranslateLoader } from '../src/lib/module-translate-loader';
+import { toJsonPath, ModuleTranslateLoader } from '../src/lib/module-translate-loader';
+
+const defaultOptions: IModuleTranslationOptions = {
+  modules: [
+    {
+      baseTranslateUrl: './assets/i18n'
+    },
+    {
+      moduleName: 'feature1',
+      baseTranslateUrl: './assets/i18n'
+    },
+    {
+      moduleName: 'feature2',
+      baseTranslateUrl: './assets/i18n'
+    }
+  ]
+};
+
+const mockTranslation = {
+  key: 'value',
+  key1: 'value1',
+  parent: {
+    child: {
+      grandChild: 'value1'
+    }
+  }
+};
+
+const moduleMockTranslations = {
+  feature1: {
+    key1: 'feature1_value1',
+    key2: 'feature1_value2',
+    parent: {
+      child: {
+        grandChild1: 'feature1_value1',
+        grandChild2: 'feature1_value2'
+      }
+    }
+  },
+  feature2: {
+    key3: 'feature2_value3',
+    key4: 'feature2_value4',
+    parent: {
+      child: {
+        grandChild1: 'feature2_value1',
+        grandChild2: 'feature2_value2',
+        grandChild3: 'feature2_value3'
+      }
+    }
+  }
+};
 
 describe('ModuleTranslateLoader', () => {
   let httpMock: HttpTestingController;
-
-  const defaultOptions: IModuleTranslationOptions = {
-    modules: [
-      {
-        baseTranslateUrl: './assets/i18n'
-      },
-      {
-        moduleName: 'feature1',
-        baseTranslateUrl: './assets/i18n'
-      },
-      {
-        moduleName: 'feature2',
-        baseTranslateUrl: './assets/i18n'
-      }
-    ]
-  };
-
-  const mockTranslation = {
-    key: 'value',
-    key1: 'value1',
-    parent: {
-      child: {
-        grandChild: 'value1'
-      }
-    }
-  };
-
-  const moduleMockTranslations = {
-    feature1: {
-      key1: 'feature1_value1',
-      key2: 'feature1_value2',
-      parent: {
-        child: {
-          grandChild1: 'feature1_value1',
-          grandChild2: 'feature1_value2'
-        }
-      }
-    },
-    feature2: {
-      key3: 'feature2_value3',
-      key4: 'feature2_value4',
-      parent: {
-        child: {
-          grandChild1: 'feature2_value1',
-          grandChild2: 'feature2_value2',
-          grandChild3: 'feature2_value3'
-        }
-      }
-    }
-  };
 
   beforeEach(() => {
     TestBed.resetTestEnvironment();
@@ -75,18 +75,18 @@ describe('ModuleTranslateLoader', () => {
     httpMock.verify();
   });
 
-  it('should give back a url ending with .json', () => {
+  it('should give back url ending with .json', () => {
     const path = './assets/feature1/en';
     const expected = path.concat('.json');
-    expect(createJsonPath(path)).toEqual(expected);
+    expect(toJsonPath(path)).toEqual(expected);
   });
 
-  it('should load the english translation from different modules with default configuration', done => {
+  it('should load the english translation from different modules with uppercase namespace', (done) => {
     const language = 'en';
 
     const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), defaultOptions);
 
-    loader.getTranslation(language).subscribe(translation => {
+    loader.getTranslation(language).subscribe((translation) => {
       const expected = {
         key: 'value',
         key1: 'value1',
@@ -109,7 +109,39 @@ describe('ModuleTranslateLoader', () => {
     });
   });
 
-  it('should load the english translation from different modules with a custom namespace', done => {
+  it('should load the english translation from different modules with lowercase namespace', (done) => {
+    const options: IModuleTranslationOptions = {
+      ...defaultOptions,
+      lowercaseNamespace: true
+    };
+
+    const language = 'en';
+    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+
+    loader.getTranslation(language).subscribe((translation) => {
+      const expected = {
+        key: 'value',
+        key1: 'value1',
+        parent: { child: { grandChild: 'value1' } },
+        feature1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+        feature2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+      };
+
+      expect(isEqual(translation, expected)).toBe(true);
+      done();
+    });
+
+    defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
+      const path =
+        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
+
+      const mock = createTestRequest(path);
+      expect(mock.request.method).toEqual('GET');
+      mock.flush(mockTranslation);
+    });
+  });
+
+  it('should load the english translation from different modules with a custom namespace in uppercase', (done) => {
     const options: IModuleTranslationOptions = {
       modules: [
         {
@@ -118,12 +150,12 @@ describe('ModuleTranslateLoader', () => {
         },
         {
           moduleName: 'feature1',
-          nameSpace: 'custom1',
+          namespace: 'custom1',
           baseTranslateUrl: './assets/i18n'
         },
         {
           moduleName: 'feature2',
-          nameSpace: 'custom2',
+          namespace: 'custom2',
           baseTranslateUrl: './assets/i18n'
         }
       ]
@@ -132,7 +164,7 @@ describe('ModuleTranslateLoader', () => {
     const language = 'en';
     const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
-    loader.getTranslation(language).subscribe(translation => {
+    loader.getTranslation(language).subscribe((translation) => {
       const expected = {
         key: 'value',
         key1: 'value1',
@@ -155,7 +187,54 @@ describe('ModuleTranslateLoader', () => {
     });
   });
 
-  it('should load the english translation from different modules with a custom translateMerger', done => {
+  it('should load the english translation from different modules with a custom namespace in lowercase', (done) => {
+    const options: IModuleTranslationOptions = {
+      lowercaseNamespace: true,
+      modules: [
+        {
+          moduleName: null,
+          baseTranslateUrl: './assets/i18n'
+        },
+        {
+          moduleName: 'feature1',
+          namespace: 'custom1',
+          baseTranslateUrl: './assets/i18n'
+        },
+        {
+          moduleName: 'feature2',
+          namespace: 'custom2',
+          baseTranslateUrl: './assets/i18n'
+        }
+      ]
+    };
+
+    const language = 'en';
+    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+
+    loader.getTranslation(language).subscribe((translation) => {
+      const expected = {
+        key: 'value',
+        key1: 'value1',
+        parent: { child: { grandChild: 'value1' } },
+        custom1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+        custom2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+      };
+
+      expect(isEqual(translation, expected)).toBe(true);
+      done();
+    });
+
+    defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
+      const path =
+        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
+
+      const mock = createTestRequest(path);
+      expect(mock.request.method).toEqual('GET');
+      mock.flush(mockTranslation);
+    });
+  });
+
+  it('should load the english translation from different modules with a custom translateMerger', (done) => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
       translateMerger: (translations: Translation[]) => {
@@ -167,7 +246,7 @@ describe('ModuleTranslateLoader', () => {
 
     const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
-    loader.getTranslation(language).subscribe(translation => {
+    loader.getTranslation(language).subscribe((translation) => {
       const expected = {
         key: 'value',
         key1: 'value1',
@@ -210,7 +289,7 @@ describe('ModuleTranslateLoader', () => {
     });
   });
 
-  it('should load the english translation from different modules with a custom translateMap', done => {
+  it('should load the english translation from different modules with a custom translateMap', (done) => {
     const options: IModuleTranslationOptions = {
       deepMerge: true,
       modules: [
@@ -245,7 +324,7 @@ describe('ModuleTranslateLoader', () => {
 
     const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
-    loader.getTranslation(language).subscribe(translation => {
+    loader.getTranslation(language).subscribe((translation) => {
       const expected = {
         KEY: 'value',
         KEY1: 'feature1_value1',
@@ -274,17 +353,17 @@ describe('ModuleTranslateLoader', () => {
     });
   });
 
-  it('should load the english translation from different modules with deepMerge and without namespacing', done => {
+  it('should load the english translation from different modules with deepMerge and without namespace', (done) => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
-      enableNamespacing: false
+      disableNamespace: true
     };
 
     const language = 'en';
 
     const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
-    loader.getTranslation(language).subscribe(translation => {
+    loader.getTranslation(language).subscribe((translation) => {
       const expected = {
         key: 'value',
         key1: 'feature1_value1',
@@ -316,10 +395,10 @@ describe('ModuleTranslateLoader', () => {
     });
   });
 
-  it('should load the english translation from different modules without namespacing and deepmerge', done => {
+  it('should load the english translation from different modules without namespace and deepmerge', (done) => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
-      enableNamespacing: false,
+      disableNamespace: true,
       deepMerge: false
     };
 
@@ -327,7 +406,7 @@ describe('ModuleTranslateLoader', () => {
 
     const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
-    loader.getTranslation(language).subscribe(translation => {
+    loader.getTranslation(language).subscribe((translation) => {
       const expected = {
         key: 'value',
         key1: 'feature1_value1',
@@ -358,10 +437,10 @@ describe('ModuleTranslateLoader', () => {
     });
   });
 
-  it('should execute translateError if a http error occurs and still load the other translation files', done => {
+  it('should execute translateError if a http error occurs and still load the other translation files', (done) => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
-      enableNamespacing: false,
+      disableNamespace: true,
       deepMerge: false,
       translateError: (error, path) => {
         expect(path).toEqual('./assets/i18n/en.json');
@@ -373,7 +452,7 @@ describe('ModuleTranslateLoader', () => {
 
     const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
-    loader.getTranslation(language).subscribe(translation => {
+    loader.getTranslation(language).subscribe((translation) => {
       const expected = {
         key1: 'feature1_value1',
         key2: 'feature1_value2',
@@ -408,7 +487,7 @@ describe('ModuleTranslateLoader', () => {
     });
   });
 
-  it('should load from custom path templates', done => {
+  it('should load from custom path templates', (done) => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
       pathTemplate: '{baseTranslateUrl}/{language}',
@@ -419,7 +498,7 @@ describe('ModuleTranslateLoader', () => {
 
     const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
-    loader.getTranslation(language).subscribe(translation => {
+    loader.getTranslation(language).subscribe((translation) => {
       const expected = {
         key: 'value',
         key1: 'value1',
@@ -443,7 +522,7 @@ describe('ModuleTranslateLoader', () => {
     });
   });
 
-  it('should load from custom path templates 2', done => {
+  it('should load from custom path templates 2', (done) => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
       pathTemplate: '{baseTranslateUrl}/test-path/{language}',
@@ -454,7 +533,7 @@ describe('ModuleTranslateLoader', () => {
 
     const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
 
-    loader.getTranslation(language).subscribe(translation => {
+    loader.getTranslation(language).subscribe((translation) => {
       const expected = {
         key: 'value',
         key1: 'value1',
@@ -481,6 +560,6 @@ describe('ModuleTranslateLoader', () => {
   });
 
   function createTestRequest(path: string): TestRequest {
-    return httpMock.expectOne(createJsonPath(path));
+    return httpMock.expectOne(toJsonPath(path));
   }
 });

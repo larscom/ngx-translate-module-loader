@@ -4,9 +4,11 @@
 [![@larscom/ngx-translate-module-loader](https://github.com/larscom/ngx-translate-module-loader/workflows/@larscom/ngx-translate-module-loader/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader)
 [![license](https://img.shields.io/npm/l/@larscom/ngx-translate-module-loader.svg)](https://github.com/larscom/ngx-translate-module-loader/blob/master/LICENSE)
 
-Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core). Fetch multiple translations (http only)
+Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core). 
 
-Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other. Namespacing can be disabled or you can provide your own value.
+Fetch multiple translations (http only) and configure them to your needs.
+
+Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other. You can disable namespaces or provide your own value as well.
 
 ## Demo
 
@@ -114,10 +116,10 @@ The final result would then be:
 }
 ```
 
-If you don't need upper case keys, set `nameSpaceUppercase` to false in the options because it's upper case by default.
-If you don't want to enable namespaces at all, set `enableNamespacing` to false.
+If you don't want uppercase keys, set `lowercaseNamespace` to true in the options because it's uppercase by default.
+If you don't want namespaces at all, set `disableNamespace` to true.
 
-You can override the default name space by setting the `nameSpace` property in the options.
+You can override the default name space by setting the `namespace` property in the options.
 
 ## Configuration
 
@@ -128,15 +130,15 @@ export interface IModuleTranslationOptions {
    */
   modules: IModuleTranslation[];
   /**
-   * Each module gets its own namespace so it doesn't conflict with other modules
+   * By default, each module gets its own namespace so it doesn't conflict with other modules
    */
-  enableNamespacing?: boolean;
+  disableNamespace?: boolean;
   /**
-   * Create namespaces in Uppercase if namespacing is enabled
+   * By default, namespaces are uppercase
    */
-  nameSpaceUppercase?: boolean;
+  lowercaseNamespace?: boolean;
   /**
-   * Perform a deepmerge when merging translation files
+   * By default, it'll perform a deepmerge when merging translation files
    */
   deepMerge?: boolean;
   /**
@@ -184,12 +186,12 @@ export interface IModuleTranslation {
    */
   baseTranslateUrl: string;
   /**
-   * By default, it uses the moduleName as nameSpace
+   * By default, it uses the moduleName as namespace
    * @see moduleName
    *
    * Use this property if you want to override the default nameSpace
    */
-  nameSpace?: string;
+  namespace?: string;
   /**
    * Custom translation map function after retrieving a translation file
    * @param translation the resolved translation file

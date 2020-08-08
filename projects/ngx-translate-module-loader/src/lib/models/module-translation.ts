@@ -18,12 +18,12 @@ export interface IModuleTranslation {
    */
   baseTranslateUrl: string;
   /**
-   * By default, it uses the moduleName as nameSpace
+   * By default, it uses the moduleName as namespace
    * @see moduleName
    *
    * Use this property if you want to override the default nameSpace
    */
-  nameSpace?: string;
+  namespace?: string;
   /**
    * Custom translation map function after retrieving a translation file
    * @param translation the resolved translation file
