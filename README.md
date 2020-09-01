@@ -1,10 +1,11 @@
 # @larscom/ngx-translate-module-loader
 
-[![npm-release](https://img.shields.io/npm/v/@larscom/ngx-translate-module-loader.svg?label=npm)](https://www.npmjs.com/package/@larscom/ngx-translate-module-loader)
-[![@larscom/ngx-translate-module-loader](https://github.com/larscom/ngx-translate-module-loader/workflows/@larscom/ngx-translate-module-loader/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader)
+[![npm-version](https://img.shields.io/npm/v/@larscom/ngx-translate-module-loader.svg?label=npm)](https://www.npmjs.com/package/@larscom/ngx-translate-module-loader)
+![npm](https://img.shields.io/npm/dw/@larscom/ngx-translate-module-loader)
 [![license](https://img.shields.io/npm/l/@larscom/ngx-translate-module-loader.svg)](https://github.com/larscom/ngx-translate-module-loader/blob/master/LICENSE)
+[![@larscom/ngx-translate-module-loader](https://github.com/larscom/ngx-translate-module-loader/workflows/@larscom/ngx-translate-module-loader/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader)
 
-Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core). 
+Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core).
 
 Fetch multiple translations (http only) and configure them to your needs.
 
@@ -50,6 +51,7 @@ export function moduleHttpLoaderFactory(http: HttpClient) {
       { moduleName: 'feature2', baseTranslateUrl }
     ]
   };
+
   return new ModuleTranslateLoader(http, options);
 }
 
@@ -84,9 +86,9 @@ export function moduleHttpLoaderFactory(http: HttpClient) {
     modules: [
       // no moduleName/namespace
       { baseTranslateUrl },
-      // nameSpace: FEATURE1
+      // namespace: FEATURE1
       { moduleName: 'feature1', baseTranslateUrl },
-      // nameSpace: FEATURE2
+      // namespace: FEATURE2
       { moduleName: 'feature2', baseTranslateUrl }
     ]
   };
