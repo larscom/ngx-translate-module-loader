@@ -29,7 +29,6 @@ export interface IModuleTranslation {
    * @param translation the resolved translation file
    */
   translateMap?: (translation: Translation) => Translation;
-
   /**
    * Custom path template for fetching translations
    * @example
