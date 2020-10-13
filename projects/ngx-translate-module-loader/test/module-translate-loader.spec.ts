@@ -100,10 +100,7 @@ describe('ModuleTranslateLoader', () => {
     });
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path =
-        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
-
-      const mock = createTestRequest(path);
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
       expect(mock.request.method).toEqual('GET');
       mock.flush(mockTranslation);
     });
@@ -132,10 +129,7 @@ describe('ModuleTranslateLoader', () => {
     });
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path =
-        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
-
-      const mock = createTestRequest(path);
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
       expect(mock.request.method).toEqual('GET');
       mock.flush(mockTranslation);
     });
@@ -178,10 +172,7 @@ describe('ModuleTranslateLoader', () => {
     });
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path =
-        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
-
-      const mock = createTestRequest(path);
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
       expect(mock.request.method).toEqual('GET');
       mock.flush(mockTranslation);
     });
@@ -232,12 +223,9 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path =
-        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
-
-      const mock = createTestRequest(path);
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
       expect(mock.request.method).toEqual('GET');
-      const response = moduleName == null ? mockTranslation : moduleMockTranslations[moduleName];
+      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
       mock.flush(response);
     });
   });
@@ -296,12 +284,9 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path =
-        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
-
-      const mock = createTestRequest(path);
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
       expect(mock.request.method).toEqual('GET');
-      const response = moduleName == null ? mockTranslation : moduleMockTranslations[moduleName];
+      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
       mock.flush(response);
     });
   });
@@ -338,12 +323,9 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path =
-        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
-
-      const mock = createTestRequest(path);
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
       expect(mock.request.method).toEqual('GET');
-      const response = moduleName == null ? mockTranslation : moduleMockTranslations[moduleName];
+      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
       mock.flush(response);
     });
   });
@@ -380,12 +362,9 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path =
-        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
-
-      const mock = createTestRequest(path);
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
       expect(mock.request.method).toEqual('GET');
-      const response = moduleName == null ? mockTranslation : moduleMockTranslations[moduleName];
+      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
       mock.flush(response);
     });
   });
@@ -425,13 +404,10 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path =
-        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
-
-      const mock = createTestRequest(path);
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
       expect(mock.request.method).toEqual('GET');
 
-      const response = moduleName == null ? mockTranslation : moduleMockTranslations[moduleName];
+      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
 
       mock.flush(response, {
         status: moduleName == null ? 404 : 200,
@@ -442,9 +418,22 @@ describe('ModuleTranslateLoader', () => {
 
   it('should load from custom path templates', (done) => {
     const options: IModuleTranslationOptions = {
-      ...defaultOptions,
-      pathTemplate: '{baseTranslateUrl}/{language}',
-      modulePathTemplate: '{baseTranslateUrl}/{language}/{moduleName}'
+      modules: [
+        {
+          baseTranslateUrl: './assets/i18n',
+          pathTemplate: '{baseTranslateUrl}/{language}'
+        },
+        {
+          moduleName: 'feature1',
+          baseTranslateUrl: './assets/i18n',
+          pathTemplate: '{baseTranslateUrl}/{language}/{moduleName}'
+        },
+        {
+          moduleName: 'feature2',
+          baseTranslateUrl: './assets/i18n',
+          pathTemplate: '{baseTranslateUrl}/{language}/{moduleName}'
+        }
+      ]
     };
 
     const language = 'en';
@@ -465,9 +454,7 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path =
-        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${language}/${moduleName}`;
-
+      const path = moduleName ? `${baseTranslateUrl}/${language}/${moduleName}` : `${baseTranslateUrl}/${language}`;
       const mock = createTestRequest(path);
       expect(mock.request.method).toEqual('GET');
 
@@ -475,11 +462,29 @@ describe('ModuleTranslateLoader', () => {
     });
   });
 
-  it('should load from custom path templates 2', (done) => {
+  it('should load from multiple different custom path templates', (done) => {
     const options: IModuleTranslationOptions = {
-      ...defaultOptions,
-      pathTemplate: '{baseTranslateUrl}/test-path/{language}',
-      modulePathTemplate: '{baseTranslateUrl}/test-path/{language}/{moduleName}'
+      modules: [
+        {
+          baseTranslateUrl: './assets/i18n',
+          pathTemplate: '{baseTranslateUrl}/test-path/{language}'
+        },
+        {
+          moduleName: 'feature1',
+          baseTranslateUrl: './assets/i18n',
+          pathTemplate: '{baseTranslateUrl}/test-path/{language}/{moduleName}'
+        },
+        {
+          moduleName: 'feature2',
+          baseTranslateUrl: './assets/i18n',
+          pathTemplate: '{baseTranslateUrl}/test-path/{language}/{moduleName}'
+        },
+        {
+          moduleName: 'feature3',
+          baseTranslateUrl: './assets/i18n',
+          pathTemplate: '{baseTranslateUrl}/test-path/{language}/extra/{moduleName}'
+        }
+      ]
     };
 
     const language = 'en';
@@ -492,7 +497,8 @@ describe('ModuleTranslateLoader', () => {
         key1: 'value1',
         parent: { child: { grandChild: 'value1' } },
         FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
-        FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+        FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+        FEATURE3: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
       expect(isEqual(translation, expected)).toBeTruthy();
@@ -500,10 +506,11 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path =
-        moduleName == null
-          ? `${baseTranslateUrl}/test-path/${language}`
-          : `${baseTranslateUrl}/test-path/${language}/${moduleName}`;
+      const path = moduleName
+        ? moduleName === 'feature3'
+          ? `${baseTranslateUrl}/test-path/${language}/extra/${moduleName}`
+          : `${baseTranslateUrl}/test-path/${language}/${moduleName}`
+        : `${baseTranslateUrl}/test-path/${language}`;
 
       const mock = createTestRequest(path);
       expect(mock.request.method).toEqual('GET');
@@ -514,5 +521,9 @@ describe('ModuleTranslateLoader', () => {
 
   function createTestRequest(path: string): TestRequest {
     return httpMock.expectOne(toJsonPath(path));
+  }
+
+  function getTranslatePath(baseTranslateUrl: string, moduleName: string, language: string): string {
+    return moduleName ? `${baseTranslateUrl}/${moduleName}/${language}` : `${baseTranslateUrl}/${language}`;
   }
 });

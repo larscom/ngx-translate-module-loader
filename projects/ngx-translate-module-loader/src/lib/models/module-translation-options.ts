@@ -29,16 +29,4 @@ export interface IModuleTranslationOptions {
    * @param translations the resolved translation files
    */
   translateMerger?: (translations: Translation[]) => Translation;
-  /**
-   * Custom module path template for fetching translations
-   * @example
-   * '{baseTranslateUrl}/{moduleName}/{language}'
-   */
-  modulePathTemplate?: string;
-  /**
-   * Custom path template for fetching translations
-   * @example
-   * '{baseTranslateUrl}/{language}'
-   */
-  pathTemplate?: string;
 }

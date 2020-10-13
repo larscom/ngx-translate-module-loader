@@ -21,7 +21,7 @@ export interface IModuleTranslation {
    * By default, it uses the moduleName as namespace
    * @see moduleName
    *
-   * Use this property if you want to override the default nameSpace
+   * Use this property if you want to override the default namespace
    */
   namespace?: string;
   /**
@@ -29,4 +29,17 @@ export interface IModuleTranslation {
    * @param translation the resolved translation file
    */
   translateMap?: (translation: Translation) => Translation;
+
+  /**
+   * Custom path template for fetching translations
+   * @example
+   * '{baseTranslateUrl}/{moduleName}/{language}'
+   * or
+   * @example
+   * '{baseTranslateUrl}/{language}'
+   *
+   * It depends whether you have a moduleName defined
+   * @see moduleName
+   */
+  pathTemplate?: string;
 }

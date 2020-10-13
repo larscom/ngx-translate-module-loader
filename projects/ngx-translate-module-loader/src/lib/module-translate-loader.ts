@@ -9,15 +9,15 @@ import { Translation } from './models/translation';
 
 export const toJsonPath = (path: string) => path.concat('.json');
 
-const PATH_TEMPLATE_MATCH = /{([^}]+)}/gi;
+const PATH_TEMPLATE_REGEX = /{([^}]+)}/gi;
+const PATH_CLEAN_REGEX = /([^:]\/)\/+/gi;
+const DEFAULT_PATH_TEMPLATE = '{baseTranslateUrl}/{moduleName}/{language}';
 
 export class ModuleTranslateLoader implements TranslateLoader {
   private readonly defaultOptions: IModuleTranslationOptions = {
     disableNamespace: false,
     lowercaseNamespace: false,
     deepMerge: true,
-    modulePathTemplate: '{baseTranslateUrl}/{moduleName}/{language}',
-    pathTemplate: '{baseTranslateUrl}/{language}',
     ...this.options
   };
 
@@ -66,27 +66,29 @@ export class ModuleTranslateLoader implements TranslateLoader {
 
   private fetchTranslation(
     language: string,
-    { pathTemplate, translateError }: IModuleTranslationOptions,
-    { baseTranslateUrl, translateMap }: IModuleTranslation
+    { translateError }: IModuleTranslationOptions,
+    { pathTemplate, baseTranslateUrl, translateMap }: IModuleTranslation
   ): Observable<Translation> {
     const pathOptions = { baseTranslateUrl, language };
-    const path = toJsonPath(pathTemplate.replace(PATH_TEMPLATE_MATCH, (_, m1: string) => pathOptions[m1] || ''));
+    const template = pathTemplate || DEFAULT_PATH_TEMPLATE;
+    const path = toJsonPath(template.replace(PATH_TEMPLATE_REGEX, (a, m1: string) => pathOptions[m1] || ''));
+    const cleanedPath = path.replace(PATH_CLEAN_REGEX, '$1');
 
-    return this.http.get<Translation>(path).pipe(
+    return this.http.get<Translation>(cleanedPath).pipe(
       map((translation) => (translateMap ? translateMap(translation) : translation)),
-      this.catchError(path, translateError)
+      this.catchError(cleanedPath, translateError)
     );
   }
 
   private fetchTranslationForModule(
     language: string,
-    { modulePathTemplate, disableNamespace, lowercaseNamespace, translateError }: IModuleTranslationOptions,
-    { baseTranslateUrl, moduleName, namespace, translateMap }: IModuleTranslation
+    { disableNamespace, lowercaseNamespace, translateError }: IModuleTranslationOptions,
+    { pathTemplate, baseTranslateUrl, moduleName, namespace, translateMap }: IModuleTranslation
   ): Observable<Translation> {
-    const modulePathOptions = { baseTranslateUrl, moduleName, language };
-    const modulePath = toJsonPath(
-      modulePathTemplate.replace(PATH_TEMPLATE_MATCH, (_, m1: string) => modulePathOptions[m1] || '')
-    );
+    const pathOptions = { baseTranslateUrl, moduleName, language };
+    const template = pathTemplate || DEFAULT_PATH_TEMPLATE;
+    const path = toJsonPath(template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || ''));
+    const cleanedPath = path.replace(PATH_CLEAN_REGEX, '$1');
 
     const namespaceKey = namespace
       ? namespace
@@ -94,7 +96,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
       ? moduleName.toLowerCase()
       : moduleName.toUpperCase();
 
-    return this.http.get<Translation>(modulePath).pipe(
+    return this.http.get<Translation>(cleanedPath).pipe(
       map((translation) => {
         return translateMap
           ? translateMap(translation)
@@ -102,7 +104,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
           ? translation
           : Object({ [namespaceKey]: translation });
       }),
-      this.catchError(modulePath, translateError)
+      this.catchError(cleanedPath, translateError)
     );
   }
 

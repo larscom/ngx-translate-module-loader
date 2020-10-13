@@ -87,9 +87,9 @@ export function moduleHttpLoaderFactory(http: HttpClient) {
       // no moduleName/namespace
       { baseTranslateUrl },
       // namespace: FEATURE1
-      { moduleName: 'feature1', baseTranslateUrl },
+      { baseTranslateUrl, moduleName: 'feature1' },
       // namespace: FEATURE2
-      { moduleName: 'feature2', baseTranslateUrl }
+      { baseTranslateUrl, moduleName: 'feature2' }
     ]
   };
   return new ModuleTranslateLoader(http, options);
@@ -154,18 +154,6 @@ export interface IModuleTranslationOptions {
    * @param translations the resolved translation files
    */
   translateMerger?: (translations: Translation[]) => Translation;
-  /**
-   * Custom module path template for fetching translations
-   * @example
-   * '{baseTranslateUrl}/{moduleName}/{language}'
-   */
-  modulePathTemplate?: string;
-  /**
-   * Custom path template for fetching translations
-   * @example
-   * '{baseTranslateUrl}/{language}'
-   */
-  pathTemplate?: string;
 }
 ```
 
@@ -191,7 +179,7 @@ export interface IModuleTranslation {
    * By default, it uses the moduleName as namespace
    * @see moduleName
    *
-   * Use this property if you want to override the default nameSpace
+   * Use this property if you want to override the default namespace
    */
   namespace?: string;
   /**
@@ -199,6 +187,19 @@ export interface IModuleTranslation {
    * @param translation the resolved translation file
    */
   translateMap?: (translation: Translation) => Translation;
+
+  /**
+   * Custom path template for fetching translations
+   * @example
+   * '{baseTranslateUrl}/{moduleName}/{language}'
+   * or
+   * @example
+   * '{baseTranslateUrl}/{language}'
+   *
+   * It depends whether you have a moduleName defined
+   * @see moduleName
+   */
+  pathTemplate?: string;
 }
 ```
 
@@ -206,16 +207,21 @@ export interface IModuleTranslation {
 
 ### Custom templates for fetching translations
 
-By default, module translations gets fetched by using the following template:
+By default, translations gets fetched by using the following template:
 
-`'{baseTranslateUrl}/{moduleName}/{language}'` e.g.: ./assets/feature1/en.json
+`'{baseTranslateUrl}/{moduleName}/{language}'` e.g.: **./assets/feature1/en.json**
 
 You can override this option if you wish to do so:
 
 ```ts
-    const options: IModuleTranslationOptions = {
-      ...
-      // translates to: ./assets/en/feature1.json
-      modulePathTemplate: '{baseTranslateUrl}/{language}/{moduleName}'
-    };
+const options: IModuleTranslationOptions = {
+  modules: [
+    // resolves to: ./assets/my-path/en.json
+    { baseTranslateUrl, pathTemplate: '{baseTranslateUrl}/my-path/{language}' },
+    // resolves to: ./assets/my-path/en/feature1.json
+    { baseTranslateUrl, moduleName: 'feature1', pathTemplate: '{baseTranslateUrl}/my-path/{language}/{moduleName}' },
+    // resolves to: ./assets/my-path/en/feature2.json
+    { baseTranslateUrl, moduleName: 'feature2', pathTemplate: '{baseTranslateUrl}/my-path/{language}/{moduleName}' }
+  ]
+};
 ```
