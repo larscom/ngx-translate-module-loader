@@ -87,10 +87,9 @@ export class ModuleTranslateLoader implements TranslateLoader {
     const modulePath = toJsonPath(
       modulePathTemplate.replace(PATH_TEMPLATE_MATCH, (_, m1: string) => modulePathOptions[m1] || '')
     );
+
     const namespaceKey = namespace
-      ? lowercaseNamespace
-        ? namespace.toLowerCase()
-        : namespace.toUpperCase()
+      ? namespace
       : lowercaseNamespace
       ? moduleName.toLowerCase()
       : moduleName.toUpperCase();

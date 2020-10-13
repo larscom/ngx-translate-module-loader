@@ -95,7 +95,7 @@ describe('ModuleTranslateLoader', () => {
         FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
-      expect(isEqual(translation, expected)).toBe(true);
+      expect(isEqual(translation, expected)).toBeTruthy();
       done();
     });
 
@@ -127,7 +127,7 @@ describe('ModuleTranslateLoader', () => {
         feature2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
-      expect(isEqual(translation, expected)).toBe(true);
+      expect(isEqual(translation, expected)).toBeTruthy();
       done();
     });
 
@@ -141,7 +141,7 @@ describe('ModuleTranslateLoader', () => {
     });
   });
 
-  it('should load the english translation from different modules with a custom namespace in uppercase', (done) => {
+  it('should load the english translation from different modules with a custom namespace', (done) => {
     const options: IModuleTranslationOptions = {
       modules: [
         {
@@ -150,7 +150,7 @@ describe('ModuleTranslateLoader', () => {
         },
         {
           moduleName: 'feature1',
-          namespace: 'custom1',
+          namespace: 'Custom1',
           baseTranslateUrl: './assets/i18n'
         },
         {
@@ -169,58 +169,11 @@ describe('ModuleTranslateLoader', () => {
         key: 'value',
         key1: 'value1',
         parent: { child: { grandChild: 'value1' } },
-        CUSTOM1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
-        CUSTOM2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
-      };
-
-      expect(isEqual(translation, expected)).toBe(true);
-      done();
-    });
-
-    defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path =
-        moduleName == null ? `${baseTranslateUrl}/${language}` : `${baseTranslateUrl}/${moduleName}/${language}`;
-
-      const mock = createTestRequest(path);
-      expect(mock.request.method).toEqual('GET');
-      mock.flush(mockTranslation);
-    });
-  });
-
-  it('should load the english translation from different modules with a custom namespace in lowercase', (done) => {
-    const options: IModuleTranslationOptions = {
-      lowercaseNamespace: true,
-      modules: [
-        {
-          moduleName: null,
-          baseTranslateUrl: './assets/i18n'
-        },
-        {
-          moduleName: 'feature1',
-          namespace: 'custom1',
-          baseTranslateUrl: './assets/i18n'
-        },
-        {
-          moduleName: 'feature2',
-          namespace: 'custom2',
-          baseTranslateUrl: './assets/i18n'
-        }
-      ]
-    };
-
-    const language = 'en';
-    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
-
-    loader.getTranslation(language).subscribe((translation) => {
-      const expected = {
-        key: 'value',
-        key1: 'value1',
-        parent: { child: { grandChild: 'value1' } },
-        custom1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+        Custom1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
         custom2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
-      expect(isEqual(translation, expected)).toBe(true);
+      expect(isEqual(translation, expected)).toBeTruthy();
       done();
     });
 
@@ -274,7 +227,7 @@ describe('ModuleTranslateLoader', () => {
         }
       };
 
-      expect(isEqual(translation, expected)).toBe(true);
+      expect(isEqual(translation, expected)).toBeTruthy();
       done();
     });
 
@@ -338,7 +291,7 @@ describe('ModuleTranslateLoader', () => {
         }
       };
 
-      expect(isEqual(translation, expected)).toBe(true);
+      expect(isEqual(translation, expected)).toBeTruthy();
       done();
     });
 
@@ -380,7 +333,7 @@ describe('ModuleTranslateLoader', () => {
         }
       };
 
-      expect(isEqual(translation, expected)).toBe(true);
+      expect(isEqual(translation, expected)).toBeTruthy();
       done();
     });
 
@@ -422,7 +375,7 @@ describe('ModuleTranslateLoader', () => {
         }
       };
 
-      expect(isEqual(translation, expected)).toBe(true);
+      expect(isEqual(translation, expected)).toBeTruthy();
       done();
     });
 
@@ -444,7 +397,7 @@ describe('ModuleTranslateLoader', () => {
       deepMerge: false,
       translateError: (error, path) => {
         expect(path).toEqual('./assets/i18n/en.json');
-        expect(error instanceof HttpErrorResponse).toBe(true);
+        expect(error instanceof HttpErrorResponse).toBeTruthy();
       }
     };
 
@@ -467,7 +420,7 @@ describe('ModuleTranslateLoader', () => {
         }
       };
 
-      expect(isEqual(translation, expected)).toBe(true);
+      expect(isEqual(translation, expected)).toBeTruthy();
       done();
     });
 
@@ -507,7 +460,7 @@ describe('ModuleTranslateLoader', () => {
         FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
-      expect(isEqual(translation, expected)).toBe(true);
+      expect(isEqual(translation, expected)).toBeTruthy();
       done();
     });
 
@@ -542,7 +495,7 @@ describe('ModuleTranslateLoader', () => {
         FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
-      expect(isEqual(translation, expected)).toBe(true);
+      expect(isEqual(translation, expected)).toBeTruthy();
       done();
     });
 
