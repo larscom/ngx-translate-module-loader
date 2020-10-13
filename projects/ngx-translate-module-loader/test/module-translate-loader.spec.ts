@@ -6,7 +6,7 @@ import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@ang
 import { isEqual } from 'lodash';
 import { IModuleTranslationOptions } from '../src/lib/models/module-translation-options';
 import { Translation } from '../src/lib/models/translation';
-import { toJsonPath, ModuleTranslateLoader } from '../src/lib/module-translate-loader';
+import { ModuleTranslateLoader, toJsonPath } from '../src/lib/module-translate-loader';
 
 const defaultOptions: IModuleTranslationOptions = {
   modules: [

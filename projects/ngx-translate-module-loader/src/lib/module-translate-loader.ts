@@ -71,7 +71,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
   ): Observable<Translation> {
     const pathOptions = { baseTranslateUrl, language };
     const template = pathTemplate || DEFAULT_PATH_TEMPLATE;
-    const path = toJsonPath(template.replace(PATH_TEMPLATE_REGEX, (a, m1: string) => pathOptions[m1] || ''));
+    const path = toJsonPath(template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || ''));
     const cleanedPath = path.replace(PATH_CLEAN_REGEX, '$1');
 
     return this.http.get<Translation>(cleanedPath).pipe(

@@ -46,9 +46,9 @@ export function moduleHttpLoaderFactory(http: HttpClient) {
       // final url: ./assets/i18n/en.json
       { baseTranslateUrl },
       // final url: ./assets/i18n/feature1/en.json
-      { moduleName: 'feature1', baseTranslateUrl },
+      { baseTranslateUrl, moduleName: 'feature1' },
       // final url: ./assets/i18n/feature2/en.json
-      { moduleName: 'feature2', baseTranslateUrl }
+      { baseTranslateUrl, moduleName: 'feature2' }
     ]
   };
 
