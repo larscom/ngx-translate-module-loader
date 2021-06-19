@@ -11,9 +11,6 @@
       "path": "./tsconfig.app.json"
     },
     {
-      "path": "./tsconfig.spec.json"
-    },
-    {
       "path": "./projects/ngx-translate-module-loader/tsconfig.lib.json"
     },
     {

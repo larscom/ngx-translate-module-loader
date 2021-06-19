@@ -3,10 +3,9 @@ import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@an
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
-import { isEqual } from 'lodash';
-import { IModuleTranslationOptions } from '../src/lib/models/module-translation-options';
-import { Translation } from '../src/lib/models/translation';
-import { ModuleTranslateLoader, toJsonPath } from '../src/lib/module-translate-loader';
+import { IModuleTranslationOptions } from './models/module-translation-options';
+import { Translation } from './models/translation';
+import { ModuleTranslateLoader, toJsonPath } from './module-translate-loader';
 
 const defaultOptions: IModuleTranslationOptions = {
   modules: [
@@ -95,7 +94,7 @@ describe('ModuleTranslateLoader', () => {
         FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
-      expect(isEqual(translation, expected)).toBeTruthy();
+      expect(translation).toEqual(expected);
       done();
     });
 
@@ -124,7 +123,7 @@ describe('ModuleTranslateLoader', () => {
         feature2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
-      expect(isEqual(translation, expected)).toBeTruthy();
+      expect(translation).toEqual(expected);
       done();
     });
 
@@ -167,7 +166,7 @@ describe('ModuleTranslateLoader', () => {
         custom2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
-      expect(isEqual(translation, expected)).toBeTruthy();
+      expect(translation).toEqual(expected);
       done();
     });
 
@@ -218,7 +217,7 @@ describe('ModuleTranslateLoader', () => {
         }
       };
 
-      expect(isEqual(translation, expected)).toBeTruthy();
+      expect(translation).toEqual(expected);
       done();
     });
 
@@ -279,7 +278,7 @@ describe('ModuleTranslateLoader', () => {
         }
       };
 
-      expect(isEqual(translation, expected)).toBeTruthy();
+      expect(translation).toEqual(expected);
       done();
     });
 
@@ -318,7 +317,7 @@ describe('ModuleTranslateLoader', () => {
         }
       };
 
-      expect(isEqual(translation, expected)).toBeTruthy();
+      expect(translation).toEqual(expected);
       done();
     });
 
@@ -357,7 +356,7 @@ describe('ModuleTranslateLoader', () => {
         }
       };
 
-      expect(isEqual(translation, expected)).toBeTruthy();
+      expect(translation).toEqual(expected);
       done();
     });
 
@@ -399,7 +398,7 @@ describe('ModuleTranslateLoader', () => {
         }
       };
 
-      expect(isEqual(translation, expected)).toBeTruthy();
+      expect(translation).toEqual(expected);
       done();
     });
 
@@ -449,7 +448,7 @@ describe('ModuleTranslateLoader', () => {
         FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
-      expect(isEqual(translation, expected)).toBeTruthy();
+      expect(translation).toEqual(expected);
       done();
     });
 
@@ -501,7 +500,7 @@ describe('ModuleTranslateLoader', () => {
         FEATURE3: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
       };
 
-      expect(isEqual(translation, expected)).toBeTruthy();
+      expect(translation).toEqual(expected);
       done();
     });
 
