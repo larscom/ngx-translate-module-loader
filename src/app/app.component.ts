@@ -15,8 +15,9 @@ import { switchMap } from 'rxjs/operators';
               *ngFor="let lang of translate.getLangs()"
               [value]="lang"
               [selected]="lang === translate.currentLang"
-              >{{ lang }}</option
             >
+              {{ lang }}
+            </option>
           </select>
         </label>
       </div>
@@ -33,6 +34,10 @@ import { switchMap } from 'rxjs/operators';
   `
 })
 export class AppComponent {
+  translation$ = this.translate.onLangChange
+    .asObservable()
+    .pipe(switchMap(({ lang }) => this.translate.getTranslation(lang)));
+
   constructor(public readonly translate: TranslateService) {
     translate.addLangs(['en', 'nl']);
     translate.setDefaultLang('en');
@@ -40,8 +45,4 @@ export class AppComponent {
     const browserLang = translate.getBrowserLang();
     translate.use(browserLang.match(/en|nl/) ? browserLang : 'en');
   }
-
-  translation$ = this.translate.onLangChange.pipe(
-    switchMap(({ lang }) => this.translate.getTranslation(lang))
-  );
 }
