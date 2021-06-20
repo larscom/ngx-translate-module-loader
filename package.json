@@ -7,7 +7,7 @@
     "build": "ng build",
     "test": "jest --detectOpenHandles --coverage",
     "test:ci": "jest --runInBand --detectOpenHandles --coverage",
-    "test:watch": "jest --detectOpenHandles --coverage --watch",
+    "test:watch": "jest --detectOpenHandles --watch",
     "build:lib": "ng build ngx-translate-module-loader && npm run copy:readme",
     "build:app": "ng build --prod",
     "copy:readme": "cpx README.md dist/ngx-translate-module-loader",
