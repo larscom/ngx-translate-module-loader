@@ -518,6 +518,39 @@ describe('ModuleTranslateLoader', () => {
     });
   });
 
+  it('should have query param with version in each module', (done) => {
+    const options: IModuleTranslationOptions = {
+      ...defaultOptions,
+      version: 123
+    };
+
+    const language = 'en';
+
+    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+
+    loader.getTranslation(language).subscribe((translation) => {
+      const expected = {
+        key: 'value',
+        key1: 'value1',
+        parent: { child: { grandChild: 'value1' } },
+        FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+        FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+      };
+
+      expect(translation).toEqual(expected);
+      done();
+    });
+
+    defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
+      const path = getTranslatePath(baseTranslateUrl, moduleName, language);
+      const mock = httpMock.expectOne(`${toJsonPath(path)}?v=${options.version}`);
+
+      expect(mock.request.method).toEqual('GET');
+
+      mock.flush(mockTranslation);
+    });
+  });
+
   function createTestRequest(path: string): TestRequest {
     return httpMock.expectOne(toJsonPath(path));
   }

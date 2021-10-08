@@ -19,6 +19,12 @@ export interface IModuleTranslationOptions {
    */
   deepMerge?: boolean;
   /**
+   * Set a version to prevent the browser from caching the translation files.
+   * Each translation will get a query parameter with the version number
+   * @example 'en.json?v=123'
+   */
+  version?: string | number;
+  /**
    * Function that gets executed if an error occurred while retrieving a translation file
    * @param error the error that occurred
    * @param path the path to the location file

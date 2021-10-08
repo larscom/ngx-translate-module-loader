@@ -66,7 +66,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
 
   private fetchTranslation(
     language: string,
-    { translateError }: IModuleTranslationOptions,
+    { translateError, version }: IModuleTranslationOptions,
     { pathTemplate, baseTranslateUrl, translateMap }: IModuleTranslation
   ): Observable<Translation> {
     const pathOptions = { baseTranslateUrl, language };
@@ -74,7 +74,9 @@ export class ModuleTranslateLoader implements TranslateLoader {
     const path = toJsonPath(template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || ''));
     const cleanedPath = path.replace(PATH_CLEAN_REGEX, '$1');
 
-    return this.http.get<Translation>(cleanedPath).pipe(
+    const pathWithVersion = version ? `${cleanedPath}?v=${version}` : cleanedPath;
+
+    return this.http.get<Translation>(pathWithVersion).pipe(
       map((translation) => (translateMap ? translateMap(translation) : translation)),
       this.catchError(cleanedPath, translateError)
     );
@@ -82,7 +84,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
 
   private fetchTranslationForModule(
     language: string,
-    { disableNamespace, lowercaseNamespace, translateError }: IModuleTranslationOptions,
+    { disableNamespace, lowercaseNamespace, translateError, version }: IModuleTranslationOptions,
     { pathTemplate, baseTranslateUrl, moduleName, namespace, translateMap }: IModuleTranslation
   ): Observable<Translation> {
     const pathOptions = { baseTranslateUrl, moduleName, language };
@@ -96,7 +98,9 @@ export class ModuleTranslateLoader implements TranslateLoader {
       ? moduleName.toLowerCase()
       : moduleName.toUpperCase();
 
-    return this.http.get<Translation>(cleanedPath).pipe(
+    const pathWithVersion = version ? `${cleanedPath}?v=${version}` : cleanedPath;
+
+    return this.http.get<Translation>(pathWithVersion).pipe(
       map((translation) => {
         return translateMap
           ? translateMap(translation)
