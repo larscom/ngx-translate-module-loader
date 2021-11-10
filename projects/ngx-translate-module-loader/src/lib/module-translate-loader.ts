@@ -7,7 +7,7 @@ import { IModuleTranslation } from './models/module-translation';
 import { IModuleTranslationOptions } from './models/module-translation-options';
 import { Translation } from './models/translation';
 
-export const toJsonPath = (path: string) => path.concat('.json');
+export const concatJson = (path: string) => path.concat('.json');
 
 const PATH_TEMPLATE_REGEX = /{([^}]+)}/gi;
 const PATH_CLEAN_REGEX = /([^:]\/)\/+/gi;
@@ -71,12 +71,14 @@ export class ModuleTranslateLoader implements TranslateLoader {
   ): Observable<Translation> {
     const pathOptions = { baseTranslateUrl, language };
     const template = pathTemplate || DEFAULT_PATH_TEMPLATE;
-    const path = toJsonPath(template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || ''));
-    const cleanedPath = path.replace(PATH_CLEAN_REGEX, '$1');
 
-    const pathWithVersion = version ? `${cleanedPath}?v=${version}` : cleanedPath;
+    const cleanedPath = concatJson(
+      template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || '')
+    ).replace(PATH_CLEAN_REGEX, '$1');
 
-    return this.http.get<Translation>(pathWithVersion).pipe(
+    const path = version ? `${cleanedPath}?v=${version}` : cleanedPath;
+
+    return this.http.get<Translation>(path).pipe(
       map((translation) => (translateMap ? translateMap(translation) : translation)),
       this.catchError(cleanedPath, translateError)
     );
@@ -89,8 +91,6 @@ export class ModuleTranslateLoader implements TranslateLoader {
   ): Observable<Translation> {
     const pathOptions = { baseTranslateUrl, moduleName, language };
     const template = pathTemplate || DEFAULT_PATH_TEMPLATE;
-    const path = toJsonPath(template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || ''));
-    const cleanedPath = path.replace(PATH_CLEAN_REGEX, '$1');
 
     const namespaceKey = namespace
       ? namespace
@@ -98,9 +98,13 @@ export class ModuleTranslateLoader implements TranslateLoader {
       ? moduleName.toLowerCase()
       : moduleName.toUpperCase();
 
-    const pathWithVersion = version ? `${cleanedPath}?v=${version}` : cleanedPath;
+    const cleanedPath = concatJson(
+      template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || '')
+    ).replace(PATH_CLEAN_REGEX, '$1');
 
-    return this.http.get<Translation>(pathWithVersion).pipe(
+    const path = version ? `${cleanedPath}?v=${version}` : cleanedPath;
+
+    return this.http.get<Translation>(path).pipe(
       map((translation) => {
         return translateMap
           ? translateMap(translation)

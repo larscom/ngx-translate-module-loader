@@ -5,7 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 import { IModuleTranslationOptions } from './models/module-translation-options';
 import { Translation } from './models/translation';
-import { ModuleTranslateLoader, toJsonPath } from './module-translate-loader';
+import { ModuleTranslateLoader, concatJson } from './module-translate-loader';
 
 const defaultOptions: IModuleTranslationOptions = {
   modules: [
@@ -77,7 +77,7 @@ describe('ModuleTranslateLoader', () => {
   it('should give back url ending with .json', () => {
     const path = './assets/feature1/en';
     const expected = path.concat('.json');
-    expect(toJsonPath(path)).toEqual(expected);
+    expect(concatJson(path)).toEqual(expected);
   });
 
   it('should load the english translation from different modules with uppercase namespace', (done) => {
@@ -543,7 +543,7 @@ describe('ModuleTranslateLoader', () => {
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path = getTranslatePath(baseTranslateUrl, moduleName, language);
-      const mock = httpMock.expectOne(`${toJsonPath(path)}?v=${options.version}`);
+      const mock = httpMock.expectOne(`${concatJson(path)}?v=${options.version}`);
 
       expect(mock.request.method).toEqual('GET');
 
@@ -552,7 +552,7 @@ describe('ModuleTranslateLoader', () => {
   });
 
   function createTestRequest(path: string): TestRequest {
-    return httpMock.expectOne(toJsonPath(path));
+    return httpMock.expectOne(concatJson(path));
   }
 
   function getTranslatePath(baseTranslateUrl: string, moduleName: string, language: string): string {
