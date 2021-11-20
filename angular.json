@@ -79,13 +79,6 @@
           "options": {
             "browserTarget": "ngx-translate-module-loader-app:build"
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["tsconfig.app.json", "tsconfig.spec.json", "e2e/tsconfig.json"],
-            "exclude": ["**/node_modules/**"]
-          }
         }
       }
     },
@@ -105,16 +98,6 @@
             "production": {
               "tsConfig": "projects/ngx-translate-module-loader/tsconfig.lib.prod.json"
             }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/ngx-translate-module-loader/tsconfig.lib.json",
-              "projects/ngx-translate-module-loader/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
           }
         }
       }

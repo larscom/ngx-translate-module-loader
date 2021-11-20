@@ -99,7 +99,7 @@ describe('ModuleTranslateLoader', () => {
     });
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
       mock.flush(mockTranslation);
     });
@@ -128,7 +128,7 @@ describe('ModuleTranslateLoader', () => {
     });
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
       mock.flush(mockTranslation);
     });
@@ -138,7 +138,7 @@ describe('ModuleTranslateLoader', () => {
     const options: IModuleTranslationOptions = {
       modules: [
         {
-          moduleName: null,
+          moduleName: undefined,
           baseTranslateUrl: './assets/i18n'
         },
         {
@@ -171,7 +171,7 @@ describe('ModuleTranslateLoader', () => {
     });
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
       mock.flush(mockTranslation);
     });
@@ -222,9 +222,9 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
-      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
+      const response = moduleName ? Object(moduleMockTranslations)[moduleName] : mockTranslation;
       mock.flush(response);
     });
   });
@@ -234,7 +234,7 @@ describe('ModuleTranslateLoader', () => {
       deepMerge: true,
       modules: [
         {
-          moduleName: null,
+          moduleName: undefined,
           baseTranslateUrl: './assets/i18n',
           translateMap: (translation: Translation) => {
             return Object.keys(translation).reduce((acc, curr) => {
@@ -283,9 +283,9 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
-      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
+      const response = moduleName ? Object(moduleMockTranslations)[moduleName] : mockTranslation;
       mock.flush(response);
     });
   });
@@ -322,9 +322,9 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
-      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
+      const response = moduleName ? Object(moduleMockTranslations)[moduleName] : mockTranslation;
       mock.flush(response);
     });
   });
@@ -361,9 +361,9 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
-      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
+      const response = moduleName ? Object(moduleMockTranslations)[moduleName] : mockTranslation;
       mock.flush(response);
     });
   });
@@ -403,10 +403,10 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
 
-      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
+      const response = moduleName ? Object(moduleMockTranslations)[moduleName] : mockTranslation;
 
       mock.flush(response, {
         status: moduleName == null ? 404 : 200,
@@ -542,7 +542,7 @@ describe('ModuleTranslateLoader', () => {
     });
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path = getTranslatePath(baseTranslateUrl, moduleName, language);
+      const path = getTranslatePath(baseTranslateUrl, moduleName!, language);
       const mock = httpMock.expectOne(`${concatJson(path)}?v=${options.version}`);
 
       expect(mock.request.method).toEqual('GET');

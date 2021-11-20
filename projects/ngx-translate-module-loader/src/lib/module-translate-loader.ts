@@ -69,7 +69,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
     { translateError, version }: IModuleTranslationOptions,
     { pathTemplate, baseTranslateUrl, translateMap }: IModuleTranslation
   ): Observable<Translation> {
-    const pathOptions = { baseTranslateUrl, language };
+    const pathOptions = Object({ baseTranslateUrl, language });
     const template = pathTemplate || DEFAULT_PATH_TEMPLATE;
 
     const cleanedPath = concatJson(
@@ -89,14 +89,14 @@ export class ModuleTranslateLoader implements TranslateLoader {
     { disableNamespace, lowercaseNamespace, translateError, version }: IModuleTranslationOptions,
     { pathTemplate, baseTranslateUrl, moduleName, namespace, translateMap }: IModuleTranslation
   ): Observable<Translation> {
-    const pathOptions = { baseTranslateUrl, moduleName, language };
+    const pathOptions = Object({ baseTranslateUrl, moduleName, language });
     const template = pathTemplate || DEFAULT_PATH_TEMPLATE;
 
     const namespaceKey = namespace
       ? namespace
       : lowercaseNamespace
-      ? moduleName.toLowerCase()
-      : moduleName.toUpperCase();
+      ? moduleName!.toLowerCase()
+      : moduleName!.toUpperCase();
 
     const cleanedPath = concatJson(
       template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || '')

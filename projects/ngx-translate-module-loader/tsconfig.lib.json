@@ -9,7 +9,9 @@
     "lib": ["dom", "es2018"]
   },
   "angularCompilerOptions": {
-    "enableIvy": false,
+    "enableIvy": true,
+    "annotateForClosureCompiler": true,
+    "compilationMode": "partial",
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
     "fullTemplateTypeCheck": true,

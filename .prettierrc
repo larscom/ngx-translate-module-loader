@@ -2,6 +2,6 @@
   "useTabs": false,
   "printWidth": 120,
   "singleQuote": true,
-  "disableLanguages": ["html"],
-  "trailingComma": "none"
+  "trailingComma": "none",
+  "disableLanguages": ["html"]
 }
