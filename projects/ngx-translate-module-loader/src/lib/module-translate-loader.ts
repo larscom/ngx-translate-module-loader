@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { TranslateLoader } from '@ngx-translate/core';
-import merge from 'deepmerge';
+import { all as mergeAll } from 'deepmerge';
 import { forkJoin as ForkJoin, MonoTypeOperatorFunction, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { IModuleTranslation } from './models/module-translation';
 import { IModuleTranslationOptions } from './models/module-translation-options';
 import { Translation } from './models/translation';
 
-export const concatJson = (path: string) => path.concat('.json');
+const concatJson = (path: string) => path.concat('.json');
 
 const PATH_TEMPLATE_REGEX = /{([^}]+)}/gi;
 const PATH_CLEAN_REGEX = /([^:]\/)\/+/gi;
@@ -47,7 +47,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
         return translateMerger
           ? translateMerger(translations)
           : deepMerge
-          ? merge.all<Translation>(translations)
+          ? mergeAll<Translation>(translations)
           : translations.reduce((acc, curr) => ({ ...acc, ...curr }), Object());
       })
     );
