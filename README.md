@@ -28,7 +28,7 @@ npm i --save @larscom/ngx-translate-module-loader
 
 ## Usage
 
-**1. create an exported `moduleHttpLoaderFactory` function**
+Create an exported `moduleHttpLoaderFactory` function
 
 ```ts
 import { NgModule } from '@angular/core';
@@ -214,7 +214,7 @@ export interface IModuleTranslation {
 
 By default, translations gets fetched by using the following template:
 
-`'{baseTranslateUrl}/{moduleName}/{language}'` e.g.: **./assets/feature1/en.json**
+`'{baseTranslateUrl}/{moduleName}/{language}'` e.g. **./assets/feature1/en.json**
 
 You can override this option if you wish to do so:
 
