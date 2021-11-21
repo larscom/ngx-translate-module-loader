@@ -9,5 +9,5 @@ module.exports = {
   moduleNameMapper: {
     '^lodash-es$': 'lodash',
   },
-  setupFilesAfterEnv: ['<rootDir>/projects/ngx-translate-module-loader/test.ts'],
+  setupFilesAfterEnv: ['<rootDir>/projects/ngx-translate-module-loader/src/test.ts'],
 };
