@@ -42,7 +42,7 @@ export class AppComponent {
     translate.addLangs(['en', 'nl']);
     translate.setDefaultLang('en');
 
-    const browserLang = translate.getBrowserLang();
+    const browserLang = translate.getBrowserLang() || 'en';
     translate.use(browserLang.match(/en|nl/) ? browserLang : 'en');
   }
 }
