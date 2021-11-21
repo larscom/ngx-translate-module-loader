@@ -35,7 +35,6 @@
     "@angular/compiler-cli": "^13.0.2",
     "@angular/language-service": "^13.0.2",
     "@larscom/cpx": "^2.0.1",
-    "@types/eslint": "^7.2.13",
     "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.149",
     "@types/node": "^13.11.1",
