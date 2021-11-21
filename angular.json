@@ -91,14 +91,17 @@
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/ngx-translate-module-loader/tsconfig.lib.json",
             "project": "projects/ngx-translate-module-loader/ng-package.json"
           },
           "configurations": {
             "production": {
               "tsConfig": "projects/ngx-translate-module-loader/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-translate-module-loader/tsconfig.lib.json"
             }
-          }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }
