@@ -2,10 +2,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
+import { Translation } from '@larscom/ngx-translate-module-loader';
 import { IModuleTranslationOptions } from './models/module-translation-options';
-import { Translation } from './models/translation';
-import { ModuleTranslateLoader, concatJson } from './module-translate-loader';
+import { ModuleTranslateLoader } from './module-translate-loader';
 
 const defaultOptions: IModuleTranslationOptions = {
   modules: [
@@ -59,31 +58,26 @@ const moduleMockTranslations = {
 
 describe('ModuleTranslateLoader', () => {
   let httpMock: HttpTestingController;
+  let httpClient: HttpClient;
 
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       schemas: [NO_ERRORS_SCHEMA]
     });
+
     httpMock = TestBed.inject(HttpTestingController);
+    httpClient = TestBed.inject(HttpClient);
   });
 
   afterEach(() => {
     httpMock.verify();
   });
 
-  it('should give back url ending with .json', () => {
-    const path = './assets/feature1/en';
-    const expected = path.concat('.json');
-    expect(concatJson(path)).toEqual(expected);
-  });
-
   it('should load the english translation from different modules with uppercase namespace', (done) => {
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), defaultOptions);
+    const loader = new ModuleTranslateLoader(httpClient, defaultOptions);
 
     loader.getTranslation(language).subscribe((translation) => {
       const expected = {
@@ -99,7 +93,7 @@ describe('ModuleTranslateLoader', () => {
     });
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
       mock.flush(mockTranslation);
     });
@@ -112,7 +106,7 @@ describe('ModuleTranslateLoader', () => {
     };
 
     const language = 'en';
-    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+    const loader = new ModuleTranslateLoader(httpClient, options);
 
     loader.getTranslation(language).subscribe((translation) => {
       const expected = {
@@ -128,7 +122,7 @@ describe('ModuleTranslateLoader', () => {
     });
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
       mock.flush(mockTranslation);
     });
@@ -138,7 +132,7 @@ describe('ModuleTranslateLoader', () => {
     const options: IModuleTranslationOptions = {
       modules: [
         {
-          moduleName: null,
+          moduleName: undefined,
           baseTranslateUrl: './assets/i18n'
         },
         {
@@ -155,7 +149,7 @@ describe('ModuleTranslateLoader', () => {
     };
 
     const language = 'en';
-    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+    const loader = new ModuleTranslateLoader(httpClient, options);
 
     loader.getTranslation(language).subscribe((translation) => {
       const expected = {
@@ -171,7 +165,7 @@ describe('ModuleTranslateLoader', () => {
     });
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
       mock.flush(mockTranslation);
     });
@@ -187,7 +181,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+    const loader = new ModuleTranslateLoader(httpClient, options);
 
     loader.getTranslation(language).subscribe((translation) => {
       const expected = {
@@ -222,9 +216,9 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
-      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
+      const response = moduleName ? Object(moduleMockTranslations)[moduleName] : mockTranslation;
       mock.flush(response);
     });
   });
@@ -234,7 +228,7 @@ describe('ModuleTranslateLoader', () => {
       deepMerge: true,
       modules: [
         {
-          moduleName: null,
+          moduleName: undefined,
           baseTranslateUrl: './assets/i18n',
           translateMap: (translation: Translation) => {
             return Object.keys(translation).reduce((acc, curr) => {
@@ -262,7 +256,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+    const loader = new ModuleTranslateLoader(httpClient, options);
 
     loader.getTranslation(language).subscribe((translation) => {
       const expected = {
@@ -283,9 +277,9 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
-      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
+      const response = moduleName ? Object(moduleMockTranslations)[moduleName] : mockTranslation;
       mock.flush(response);
     });
   });
@@ -298,7 +292,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+    const loader = new ModuleTranslateLoader(httpClient, options);
 
     loader.getTranslation(language).subscribe((translation) => {
       const expected = {
@@ -322,9 +316,9 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
-      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
+      const response = moduleName ? Object(moduleMockTranslations)[moduleName] : mockTranslation;
       mock.flush(response);
     });
   });
@@ -338,7 +332,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+    const loader = new ModuleTranslateLoader(httpClient, options);
 
     loader.getTranslation(language).subscribe((translation) => {
       const expected = {
@@ -361,9 +355,9 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
-      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
+      const response = moduleName ? Object(moduleMockTranslations)[moduleName] : mockTranslation;
       mock.flush(response);
     });
   });
@@ -381,7 +375,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+    const loader = new ModuleTranslateLoader(httpClient, options);
 
     loader.getTranslation(language).subscribe((translation) => {
       const expected = {
@@ -403,10 +397,10 @@ describe('ModuleTranslateLoader', () => {
     });
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName, language));
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
       expect(mock.request.method).toEqual('GET');
 
-      const response = moduleName ? moduleMockTranslations[moduleName] : mockTranslation;
+      const response = moduleName ? Object(moduleMockTranslations)[moduleName] : mockTranslation;
 
       mock.flush(response, {
         status: moduleName == null ? 404 : 200,
@@ -437,7 +431,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+    const loader = new ModuleTranslateLoader(httpClient, options);
 
     loader.getTranslation(language).subscribe((translation) => {
       const expected = {
@@ -488,7 +482,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+    const loader = new ModuleTranslateLoader(httpClient, options);
 
     loader.getTranslation(language).subscribe((translation) => {
       const expected = {
@@ -526,7 +520,7 @@ describe('ModuleTranslateLoader', () => {
 
     const language = 'en';
 
-    const loader = new ModuleTranslateLoader(TestBed.inject(HttpClient), options);
+    const loader = new ModuleTranslateLoader(httpClient, options);
 
     loader.getTranslation(language).subscribe((translation) => {
       const expected = {
@@ -542,8 +536,8 @@ describe('ModuleTranslateLoader', () => {
     });
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
-      const path = getTranslatePath(baseTranslateUrl, moduleName, language);
-      const mock = httpMock.expectOne(`${concatJson(path)}?v=${options.version}`);
+      const path = getTranslatePath(baseTranslateUrl, moduleName!, language);
+      const mock = httpMock.expectOne(`${path.concat('.json')}?v=${options.version}`);
 
       expect(mock.request.method).toEqual('GET');
 
@@ -552,7 +546,7 @@ describe('ModuleTranslateLoader', () => {
   });
 
   function createTestRequest(path: string): TestRequest {
-    return httpMock.expectOne(concatJson(path));
+    return httpMock.expectOne(path.concat('.json'));
   }
 
   function getTranslatePath(baseTranslateUrl: string, moduleName: string, language: string): string {

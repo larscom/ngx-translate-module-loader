@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { TranslateLoader } from '@ngx-translate/core';
-import merge from 'deepmerge';
+import { all as mergeAll } from 'deepmerge';
 import { forkJoin as ForkJoin, MonoTypeOperatorFunction, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { IModuleTranslation } from './models/module-translation';
 import { IModuleTranslationOptions } from './models/module-translation-options';
 import { Translation } from './models/translation';
 
-export const concatJson = (path: string) => path.concat('.json');
+const concatJson = (path: string) => path.concat('.json');
 
 const PATH_TEMPLATE_REGEX = /{([^}]+)}/gi;
 const PATH_CLEAN_REGEX = /([^:]\/)\/+/gi;
@@ -47,7 +47,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
         return translateMerger
           ? translateMerger(translations)
           : deepMerge
-          ? merge.all<Translation>(translations)
+          ? mergeAll<Translation>(translations)
           : translations.reduce((acc, curr) => ({ ...acc, ...curr }), Object());
       })
     );
@@ -69,7 +69,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
     { translateError, version }: IModuleTranslationOptions,
     { pathTemplate, baseTranslateUrl, translateMap }: IModuleTranslation
   ): Observable<Translation> {
-    const pathOptions = { baseTranslateUrl, language };
+    const pathOptions = Object({ baseTranslateUrl, language });
     const template = pathTemplate || DEFAULT_PATH_TEMPLATE;
 
     const cleanedPath = concatJson(
@@ -89,14 +89,14 @@ export class ModuleTranslateLoader implements TranslateLoader {
     { disableNamespace, lowercaseNamespace, translateError, version }: IModuleTranslationOptions,
     { pathTemplate, baseTranslateUrl, moduleName, namespace, translateMap }: IModuleTranslation
   ): Observable<Translation> {
-    const pathOptions = { baseTranslateUrl, moduleName, language };
+    const pathOptions = Object({ baseTranslateUrl, moduleName, language });
     const template = pathTemplate || DEFAULT_PATH_TEMPLATE;
 
     const namespaceKey = namespace
       ? namespace
       : lowercaseNamespace
-      ? moduleName.toLowerCase()
-      : moduleName.toUpperCase();
+      ? moduleName!.toLowerCase()
+      : moduleName!.toUpperCase();
 
     const cleanedPath = concatJson(
       template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || '')
