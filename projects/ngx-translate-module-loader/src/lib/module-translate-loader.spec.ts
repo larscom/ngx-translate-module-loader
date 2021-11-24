@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { getTestBed, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { BrowserTestingModule } from '@angular/platform-browser/testing';
 import { Translation } from '@larscom/ngx-translate-module-loader';
 import { IModuleTranslationOptions } from './models/module-translation-options';
@@ -62,7 +62,7 @@ describe('ModuleTranslateLoader', () => {
   let httpClient: HttpClient;
 
   beforeEach(() => {
-    getTestBed().configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [BrowserTestingModule, HttpClientTestingModule],
       schemas: [NO_ERRORS_SCHEMA]
     });
