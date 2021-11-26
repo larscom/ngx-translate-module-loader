@@ -1,7 +1,6 @@
 require('jest-preset-angular/ngcc-jest-processor');
 
 module.exports = {
-  reporters: ['default'],
   preset: 'jest-preset-angular',
   roots: ['<rootDir>/projects/ngx-translate-module-loader'],
   testMatch: ['**/+(*.)+(spec).+(ts)'],
