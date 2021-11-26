@@ -9,9 +9,6 @@ module.exports = {
     '^.+\\.(ts|js|mjs|html|svg)$': 'jest-preset-angular'
   },
   transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
-  moduleNameMapper: {
-    '^lodash-es$': 'lodash'
-  },
   setupFilesAfterEnv: ['<rootDir>/projects/ngx-translate-module-loader/src/test.ts'],
   coveragePathIgnorePatterns: ['models', 'public_api', 'test']
 };
