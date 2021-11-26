@@ -1,1 +1,2 @@
-export type Translation = { [x: string]: string };
+export type Translation = Object;
+export type TranslationKey = keyof Object;
