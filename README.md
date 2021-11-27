@@ -9,10 +9,9 @@
 [![codecov](https://codecov.io/gh/larscom/ngx-translate-module-loader/branch/master/graph/badge.svg?token=5LWR6NXR8B)](https://codecov.io/gh/larscom/ngx-translate-module-loader)
 
 Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core).
-
 Fetch multiple translations (http only) and configure them to your needs.
 
-Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other. You can disable namespaces or provide your own value as well.
+Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other.
 
 ## Demo
 
@@ -99,34 +98,32 @@ export function moduleHttpLoaderFactory(http: HttpClient) {
 }
 ```
 
-Lets say each module in the above example resolves to the following translation:
+Lets say each module in the **above** example resolves to the following **JSON**:
 
-```
+```json
 {
-  "KEY: "VALUE"
+  "KEY": "VALUE"
 }
 ```
 
-The final result would then be:
+The final translation you are working with would be:
 
-```
+```json
 {
-   "KEY: "VALUE",
+   "KEY": "VALUE",
    "FEATURE1" : {
-     "KEY: "VALUE"
+     "KEY": "VALUE"
    },
     "FEATURE2" : {
-     "KEY: "VALUE"
+     "KEY": "VALUE"
    }
 }
 ```
+Even though all JSON files from those modules are the same, they don't conflict because they are not on the same level after they get merged.
 
-If you don't want uppercase keys, set `lowercaseNamespace` to true in the options because it's uppercase by default.
-If you don't want namespaces at all, set `disableNamespace` to true.
-
-You can override the default name space by setting the `namespace` property in the options.
 
 ## Configuration
+The configuration is very flexible, you can even define custom templates for fetching translations.
 
 ```ts
 export interface IModuleTranslationOptions {
@@ -211,9 +208,7 @@ export interface IModuleTranslation {
 }
 ```
 
-## Examples
-
-### Custom templates for fetching translations
+## Custom templates for fetching translations
 
 By default, translations gets fetched by using the following template:
 
