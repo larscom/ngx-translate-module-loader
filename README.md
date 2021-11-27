@@ -3,7 +3,10 @@
 [![npm-version](https://img.shields.io/npm/v/@larscom/ngx-translate-module-loader.svg?label=npm)](https://www.npmjs.com/package/@larscom/ngx-translate-module-loader)
 ![npm](https://img.shields.io/npm/dw/@larscom/ngx-translate-module-loader)
 [![license](https://img.shields.io/npm/l/@larscom/ngx-translate-module-loader.svg)](https://github.com/larscom/ngx-translate-module-loader/blob/master/LICENSE)
-[![@larscom/ngx-translate-module-loader](https://github.com/larscom/ngx-translate-module-loader/workflows/@larscom/ngx-translate-module-loader/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader)
+
+[![Master](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/workflow.yml/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/workflow.yml)
+[![CodeQL](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/codeql-analysis.yml)
+[![codecov](https://codecov.io/gh/larscom/ngx-translate-module-loader/branch/master/graph/badge.svg?token=5LWR6NXR8B)](https://codecov.io/gh/larscom/ngx-translate-module-loader)
 
 Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core).
 
