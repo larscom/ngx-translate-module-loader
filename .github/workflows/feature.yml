@@ -21,7 +21,9 @@ jobs:
           node-version: 14
       - name: install
         run: npm ci --ignore-scripts
-      - name: build
-        run: npm run build:lib
+      - name: build lib & app
+        run: |
+          npm run build:lib
+          npm run build
       - name: unit test
         run: npm run test:ci
