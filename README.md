@@ -24,6 +24,13 @@ https://stackblitz.com/edit/ngx-translate-module-loader
 
 ## Installation
 
+Choose the version corresponding to your Angular version:
+
+| @angular/core | @larscom/ngx-translate-module-loader |
+| ------------- | ------------------------------------ |
+| >= 12         | >= 3.0.0                             |
+| < 12          | <= 2.2.0                             |
+
 ```bash
 npm i --save @larscom/ngx-translate-module-loader
 ```
@@ -71,7 +78,11 @@ export function moduleHttpLoaderFactory(http: HttpClient) {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(readonly translate: TranslateService) {
+    translate.setDefaultLang('en');
+  }
+}
 ```
 
 ## Namespacing
@@ -110,19 +121,20 @@ The final translation you are working with would be:
 
 ```json
 {
-   "KEY": "VALUE",
-   "FEATURE1" : {
-     "KEY": "VALUE"
-   },
-    "FEATURE2" : {
-     "KEY": "VALUE"
-   }
+  "KEY": "VALUE",
+  "FEATURE1": {
+    "KEY": "VALUE"
+  },
+  "FEATURE2": {
+    "KEY": "VALUE"
+  }
 }
 ```
+
 Even though all JSON files from those modules are the same, they don't conflict because they are not on the same level after they get merged.
 
-
 ## Configuration
+
 The configuration is very flexible, you can even define custom templates for fetching translations.
 
 ```ts
@@ -148,7 +160,7 @@ export interface IModuleTranslationOptions {
    * Each translation will get a query parameter with the version number
    * @example 'en.json?v=123'
    */
-  version?: string | number;  
+  version?: string | number;
   /**
    * Function that gets executed if an error occurred while retrieving a translation file
    * @param error the error that occurred
