@@ -24,16 +24,16 @@ https://stackblitz.com/edit/ngx-translate-module-loader
 
 ## Installation
 
-Choose the version corresponding to your Angular version:
+```bash
+npm i --save @larscom/ngx-translate-module-loader
+```
+
+Choose the version corresponding to your Angular version
 
 | @angular/core | @larscom/ngx-translate-module-loader |
 | ------------- | ------------------------------------ |
 | >= 12         | >= 3.0.0                             |
 | < 12          | <= 2.2.0                             |
-
-```bash
-npm i --save @larscom/ngx-translate-module-loader
-```
 
 ## Usage
 
