@@ -4,7 +4,7 @@
 ![npm](https://img.shields.io/npm/dw/@larscom/ngx-translate-module-loader)
 [![license](https://img.shields.io/npm/l/@larscom/ngx-translate-module-loader.svg)](https://github.com/larscom/ngx-translate-module-loader/blob/master/LICENSE)
 
-[![Master](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/workflow.yml/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/workflow.yml)
+[![master](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/master.yml/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/master.yml)
 [![CodeQL](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/codeql-analysis.yml)
 [![codecov](https://codecov.io/gh/larscom/ngx-translate-module-loader/branch/master/graph/badge.svg?token=5LWR6NXR8B)](https://codecov.io/gh/larscom/ngx-translate-module-loader)
 

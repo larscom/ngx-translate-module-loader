@@ -1,4 +1,9 @@
-import 'jest-preset-angular/setup-jest';
+import 'zone.js/fesm2015/zone-testing-bundle.min.js';
+import { jest } from '@jest/globals';
+import { getTestBed } from '@angular/core/testing';
+import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
+
+getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
 Object.defineProperty(window, 'CSS', { value: null });
 Object.defineProperty(window, 'getComputedStyle', {
@@ -21,3 +26,5 @@ Object.defineProperty(document.body.style, 'transform', {
     };
   }
 });
+
+HTMLCanvasElement.prototype.getContext = <typeof HTMLCanvasElement.prototype.getContext>jest.fn();
