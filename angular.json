@@ -105,6 +105,5 @@
         }
       }
     }
-  },
-  "defaultProject": "ngx-translate-module-loader-app"
+  }
 }
