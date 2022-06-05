@@ -1,6 +1,6 @@
 {
   "name": "@larscom/ngx-translate-module-loader",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "description": "Highly configurable and flexible translations loader for ngx-translate. Fetch multiple translations, each translation file gets it's own namespace by default",
   "repository": {
     "type": "git",
