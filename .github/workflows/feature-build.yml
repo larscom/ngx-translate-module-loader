@@ -1,0 +1,26 @@
+name: feature
+on:
+  push:
+    branches:
+      - '!master'
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Install
+        run: npm ci --ignore-scripts --legacy-peer-deps
+      - name: Test
+        run: npm run test:ci
+      - name: Build
+        run: npm run build && npm run build:lib
+      - name: Codecov
+        run: $(npm bin)/codecov -f coverage/coverage-final.json
+

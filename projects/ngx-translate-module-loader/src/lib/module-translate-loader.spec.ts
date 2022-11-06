@@ -3,10 +3,10 @@ import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@an
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BrowserTestingModule } from '@angular/platform-browser/testing';
-import { Translation } from '@larscom/ngx-translate-module-loader';
-import { IModuleTranslationOptions } from './models/module-translation-options';
-import { TranslationKey } from './models/translation';
+import { Translation } from 'projects/ngx-translate-module-loader/src/public-api';
 import { ModuleTranslateLoader } from './module-translate-loader';
+import { IModuleTranslationOptions } from './module-translation-options';
+import { TranslationKey } from './translation';
 
 const translation: Translation = {
   key: 'value',

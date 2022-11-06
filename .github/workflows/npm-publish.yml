@@ -1,14 +1,11 @@
-name: 'master'
-
-on:
+name: NPM Publish
+'on':
   push:
-    branches:
-      - 'master'
     tags:
       - 'v*.*.*'
 
 jobs:
-  lib:
+  build_lib:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
@@ -17,28 +14,22 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
-      - name: Install packages
-        run: npm ci --ignore-scripts
-      - name: Unit test
-        run: |
-          npm run test:ci
-          $(npm bin)/codecov -f coverage/*.json
-      - name: Build lib & app
-        run: |
-          npm run build:lib
-          npm run build
-      - if: startsWith(github.ref, 'refs/tags/v')
-        name: Upload lib
+      - name: Install
+        run: npm ci --legacy-peer-deps --ignore-scripts
+      - name: Test
+        run: npm run test:ci
+      - name: Build
+        run: npm run build && npm run build:lib
+      - name: Upload library
         uses: actions/upload-artifact@v2
         with:
           name: ngx-translate-module-loader
           path: dist/ngx-translate-module-loader
 
-  npm:
+  publish_npm:
     needs:
-      - lib
+      - build_lib
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
@@ -47,12 +38,12 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
-      - name: Download lib
+      - name: Download library
         uses: actions/download-artifact@v2
         with:
           name: ngx-translate-module-loader
           path: /tmp/ngx-translate-module-loader
-      - name: Publish lib
+      - name: Publish library
         run: |
           cd /tmp/ngx-translate-module-loader
           ls -ltra .

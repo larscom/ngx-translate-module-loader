@@ -1,18 +1,14 @@
-name: 'feature'
-
+name: master
 on:
   pull_request:
     branches:
       - master
   push:
     branches:
-      - '*'
-      - '!master'
-      - '!v*.'
-      - '!*.*.*'
+      - master
 
 jobs:
-  lib:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
@@ -21,11 +17,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
-      - name: Install packages
-        run: npm ci --ignore-scripts
-      - name: Build lib & app
-        run: |
-          npm run build:lib
-          npm run build
-      - name: Unit test
+      - name: Install
+        run: npm ci --ignore-scripts --legacy-peer-deps
+      - name: Test
         run: npm run test:ci
+      - name: Build
+        run: npm run build && npm run build:lib
+      - name: Codecov
+        run: $(npm bin)/codecov -f coverage/coverage-final.json
+

@@ -3,9 +3,9 @@ import { TranslateLoader } from '@ngx-translate/core';
 import { all as mergeAll } from 'deepmerge';
 import { forkJoin as ForkJoin, MonoTypeOperatorFunction, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { IModuleTranslation } from './models/module-translation';
-import { IModuleTranslationOptions } from './models/module-translation-options';
-import { Translation } from './models/translation';
+import { IModuleTranslation } from './module-translation';
+import { IModuleTranslationOptions } from './module-translation-options';
+import { Translation } from './translation';
 
 const concatJson = (path: string) => path.concat('.json');
 

@@ -3,20 +3,14 @@
 [![npm-version](https://img.shields.io/npm/v/@larscom/ngx-translate-module-loader.svg?label=npm)](https://www.npmjs.com/package/@larscom/ngx-translate-module-loader)
 ![npm](https://img.shields.io/npm/dw/@larscom/ngx-translate-module-loader)
 [![license](https://img.shields.io/npm/l/@larscom/ngx-translate-module-loader.svg)](https://github.com/larscom/ngx-translate-module-loader/blob/master/LICENSE)
-
-[![master](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/master.yml/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/master.yml)
-[![CodeQL](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/codeql-analysis.yml)
 [![codecov](https://codecov.io/gh/larscom/ngx-translate-module-loader/branch/master/graph/badge.svg?token=5LWR6NXR8B)](https://codecov.io/gh/larscom/ngx-translate-module-loader)
 
-Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core).
-Fetch multiple translations (http only) and configure them to your needs.
+[![master](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/master-build.yml/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/master-build.yml)
+[![CodeQL](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/codeql-analysis.yml)
 
-Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other.
+> Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core). Fetch multiple translations (http only) and configure them to your needs. Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other.
 
-## Demo
-
-You can play arround on StackBlitz:
-https://stackblitz.com/edit/ngx-translate-module-loader
+### ✨ [View on StackBlitz](https://stackblitz.com/edit/ngx-translate-module-loader)
 
 ## Dependencies
 
