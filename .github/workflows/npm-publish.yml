@@ -1,4 +1,4 @@
-name: NPM Publish
+name: npm-publish
 'on':
   push:
     tags:
@@ -20,7 +20,7 @@ jobs:
         run: npm run test:ci
       - name: Build
         run: npm run build && npm run build:lib
-      - name: Upload library
+      - name: Upload
         uses: actions/upload-artifact@v2
         with:
           name: ngx-translate-module-loader
@@ -38,12 +38,12 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
-      - name: Download library
+      - name: Download
         uses: actions/download-artifact@v2
         with:
           name: ngx-translate-module-loader
           path: /tmp/ngx-translate-module-loader
-      - name: Publish library
+      - name: Publish
         run: |
           cd /tmp/ngx-translate-module-loader
           ls -ltra .
