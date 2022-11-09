@@ -22,5 +22,5 @@ jobs:
       - name: Build
         run: npm run build && npm run build:lib
       - name: Codecov
-        run: $(npm bin)/codecov -f coverage/coverage-final.json
+        run: $(npm bin)/codecov --disable=gcov -f coverage/coverage-final.json
 
