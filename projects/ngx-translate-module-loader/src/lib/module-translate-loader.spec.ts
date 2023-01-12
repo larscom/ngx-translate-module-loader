@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -547,6 +547,59 @@ describe('ModuleTranslateLoader', () => {
 
       mock.flush(translation);
     });
+  });
+
+  it('should add headers to the request in each module', (done) => {
+    const options: IModuleTranslationOptions = {
+      ...defaultOptions,
+      headers: new HttpHeaders().set('Header-Name', 'value')
+    };
+
+    const language = 'en';
+    const loader = new ModuleTranslateLoader(httpClient, options);
+
+    loader.getTranslation(language).subscribe(() => done());
+
+    options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
+      const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language));
+
+      expect(mock.request.method).toEqual('GET');
+      expect(mock.request.headers.has('Header-Name')).toBeTrue();
+
+      mock.flush(translation);
+    });
+  });
+
+  it('should add global headers to modules request only if there are no module headers defined', (done) => {
+    const options: IModuleTranslationOptions = {
+      headers: new HttpHeaders().set('Global-Header', 'value'),
+      modules: [
+        {
+          moduleName: 'feature1',
+          baseTranslateUrl: './assets/i18n',
+          headers: new HttpHeaders().set('Module-Header', 'value')
+        },
+        {
+          moduleName: 'feature2',
+          baseTranslateUrl: './assets/i18n'
+        }
+      ]
+    };
+
+    const language = 'en';
+    const loader = new ModuleTranslateLoader(httpClient, options);
+
+    loader.getTranslation(language).subscribe(() => done());
+
+    let mock = createTestRequest(getTranslatePath(options.modules[0].baseTranslateUrl, options.modules[0].moduleName!, language));
+    expect(mock.request.method).toEqual('GET');
+    expect(mock.request.headers.has('Module-Header')).toBeTrue();
+    mock.flush(translation);
+
+    mock = createTestRequest(getTranslatePath(options.modules[1].baseTranslateUrl, options.modules[1].moduleName!, language));
+    expect(mock.request.method).toEqual('GET');
+    expect(mock.request.headers.has('Global-Header')).toBeTrue();
+    mock.flush(translation);
   });
 
   function createTestRequest(path: string): TestRequest {

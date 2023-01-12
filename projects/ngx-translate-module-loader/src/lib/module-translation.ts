@@ -1,3 +1,4 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Translation } from './translation';
 
 export interface IModuleTranslation {
@@ -41,4 +42,8 @@ export interface IModuleTranslation {
    * @see moduleName
    */
   pathTemplate?: string;
+  /**
+   * Provide custom headers at 'module' level. These headers only apply to this module.
+   */
+  headers?: HttpHeaders;
 }

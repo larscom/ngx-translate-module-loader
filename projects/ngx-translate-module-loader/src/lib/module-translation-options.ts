@@ -1,3 +1,4 @@
+import { HttpHeaders } from '@angular/common/http';
 import { IModuleTranslation } from './module-translation';
 import { Translation } from './translation';
 
@@ -35,4 +36,10 @@ export interface IModuleTranslationOptions {
    * @param translations the resolved translation files
    */
   translateMerger?: (translations: Translation[]) => Translation;
+  /**
+   * Provide custom headers at 'root' level, which means this headers gets added to every request
+   * unless you specify headers at 'module' level.
+   * @see modules
+   */
+  headers?: HttpHeaders;
 }

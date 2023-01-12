@@ -132,7 +132,7 @@ Even though all JSON files from those modules are the same, they don't conflict 
 The configuration is very flexible, you can even define custom templates for fetching translations.
 
 ```ts
-export interface IModuleTranslationOptions {
+interface IModuleTranslationOptions {
   /**
    * The translation module configurations
    */
@@ -166,11 +166,17 @@ export interface IModuleTranslationOptions {
    * @param translations the resolved translation files
    */
   translateMerger?: (translations: Translation[]) => Translation;
+  /**
+   * Provide custom headers at 'root' level, which means this headers gets added to every request
+   * unless you specify headers at 'module' level.
+   * @see modules
+   */
+  headers?: HttpHeaders;
 }
 ```
 
 ```ts
-export interface IModuleTranslation {
+interface IModuleTranslation {
   /**
    * The module name
    *
@@ -211,6 +217,10 @@ export interface IModuleTranslation {
    * @see moduleName
    */
   pathTemplate?: string;
+  /**
+   * Provide custom headers at 'module' level. These headers only apply to this module.
+   */
+  headers?: HttpHeaders;
 }
 ```
 
@@ -233,4 +243,19 @@ const options: IModuleTranslationOptions = {
     { baseTranslateUrl, moduleName: 'feature2', pathTemplate: '{baseTranslateUrl}/my-path/{language}/{moduleName}' }
   ]
 };
+```
+
+## Custom headers
+
+```ts
+  const options: IModuleTranslationOptions = {
+    // global headers, applied to every request, unless you specify headers at 'module' level
+    headers: new HttpHeaders().set('Header-Name', 'Header value')
+    modules: [
+      { baseTranslateUrl },
+      // headers only applied to this module
+      { baseTranslateUrl, moduleName: 'feature1', headers: new HttpHeaders().set('Header-Name', 'Header value') },
+      { baseTranslateUrl, moduleName: 'feature2' }
+    ]
+  };
 ```

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HttpHeaders } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { ModuleTranslateLoader, IModuleTranslationOptions } from 'projects/ngx-translate-module-loader/src/public-api';
 
@@ -10,7 +10,7 @@ export function ModuleHttpLoaderFactory(http: HttpClient) {
 
   const options: IModuleTranslationOptions = {
     translateError: (error, path) => {
-      console.log('Oeps! an error occurred: ', { error, path });
+      console.log('ERROR: ', { error, path });
     },
     modules: [
       // final url: ./assets/i18n/en.json
