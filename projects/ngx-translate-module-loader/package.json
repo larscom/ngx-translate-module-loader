@@ -28,7 +28,7 @@
     "rxjs": ">=6.0.0"
   },
   "dependencies": {
-    "deepmerge": ">=3.0.0",
+    "ramda": "^0.28.0",
     "tslib": "^2.0.0"
   },
   "publishConfig": {
