@@ -9,18 +9,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v2
-      - name: Setup node
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - name: Install
-        run: npm ci --ignore-scripts --legacy-peer-deps
-      - name: Test
-        run: npm run test:ci
-      - name: Build
-        run: npm run build && npm run build:lib
-      - name: Codecov
-        run: $(npm bin)/codecov --disable=gcov -f coverage/coverage-final.json
-
+      - run: npm ci --ignore-scripts --legacy-peer-deps
+      - run: npm run test:ci
+      - run: npm run build && npm run build:lib
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/coverage-final.json
