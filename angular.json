@@ -104,9 +104,10 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngx-translate-module-loader/src/test.ts",
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "projects/ngx-translate-module-loader/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-translate-module-loader/karma.conf.js"
+            "karmaConfig": "projects/ngx-translate-module-loader/karma.conf.js",
+            "inlineStyleLanguage": "scss"
           }
         }
       }

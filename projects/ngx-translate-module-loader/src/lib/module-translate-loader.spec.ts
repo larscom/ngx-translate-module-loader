@@ -62,7 +62,7 @@ describe('ModuleTranslateLoader', () => {
   let httpMock: HttpTestingController;
   let httpClient: HttpClient;
 
-  beforeAll(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [BrowserTestingModule, HttpClientTestingModule],
       schemas: [NO_ERRORS_SCHEMA]
