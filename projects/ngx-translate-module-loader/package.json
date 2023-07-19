@@ -25,11 +25,11 @@
     "@angular/core": ">=6.0.0",
     "@angular/common": ">=6.0.0",
     "@ngx-translate/core": ">=10.0.0",
-    "rxjs": ">=6.0.0"
+    "rxjs": ">=7.0.0"
   },
   "dependencies": {
-    "ramda": "^0.28.0",
-    "tslib": "^2.0.0"
+    "ramda": "^0.29.0",
+    "tslib": "^2.6.0"
   },
   "publishConfig": {
     "access": "public"
