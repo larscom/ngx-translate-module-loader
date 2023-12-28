@@ -5,9 +5,6 @@
 [![license](https://img.shields.io/npm/l/@larscom/ngx-translate-module-loader.svg)](https://github.com/larscom/ngx-translate-module-loader/blob/master/LICENSE)
 [![codecov](https://codecov.io/gh/larscom/ngx-translate-module-loader/branch/master/graph/badge.svg?token=5LWR6NXR8B)](https://codecov.io/gh/larscom/ngx-translate-module-loader)
 
-[![master](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/master-build.yml/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/master-build.yml)
-[![CodeQL](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/larscom/ngx-translate-module-loader/actions/workflows/codeql-analysis.yml)
-
 > Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core). Fetch multiple translations (http only) and configure them to your needs. Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other.
 
 ### ✨ [View on StackBlitz](https://stackblitz.com/edit/ngx-translate-module-loader)
@@ -19,7 +16,7 @@
 ## Installation
 
 ```bash
-npm i --save @larscom/ngx-translate-module-loader
+npm install @larscom/ngx-translate-module-loader
 ```
 
 Choose the version corresponding to your Angular version
@@ -34,15 +31,15 @@ Choose the version corresponding to your Angular version
 Create an exported `moduleHttpLoaderFactory` function
 
 ```ts
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { ModuleTranslateLoader, IModuleTranslationOptions } from '@larscom/ngx-translate-module-loader';
-import { AppComponent } from './app';
+import { NgModule } from '@angular/core'
+import { BrowserModule } from '@angular/platform-browser'
+import { HttpClientModule, HttpClient } from '@angular/common/http'
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core'
+import { ModuleTranslateLoader, IModuleTranslationOptions } from '@larscom/ngx-translate-module-loader'
+import { AppComponent } from './app'
 
 export function moduleHttpLoaderFactory(http: HttpClient) {
-  const baseTranslateUrl = './assets/i18n';
+  const baseTranslateUrl = './assets/i18n'
 
   const options: IModuleTranslationOptions = {
     modules: [
@@ -53,9 +50,9 @@ export function moduleHttpLoaderFactory(http: HttpClient) {
       // final url: ./assets/i18n/feature2/en.json
       { baseTranslateUrl, moduleName: 'feature2' }
     ]
-  };
+  }
 
-  return new ModuleTranslateLoader(http, options);
+  return new ModuleTranslateLoader(http, options)
 }
 
 @NgModule({
@@ -74,7 +71,7 @@ export function moduleHttpLoaderFactory(http: HttpClient) {
 })
 export class AppModule {
   constructor(readonly translate: TranslateService) {
-    translate.setDefaultLang('en');
+    translate.setDefaultLang('en')
   }
 }
 ```
@@ -87,7 +84,7 @@ For example with these options:
 
 ```ts
 export function moduleHttpLoaderFactory(http: HttpClient) {
-  const baseTranslateUrl = './assets/i18n';
+  const baseTranslateUrl = './assets/i18n'
 
   const options: IModuleTranslationOptions = {
     modules: [
@@ -98,8 +95,8 @@ export function moduleHttpLoaderFactory(http: HttpClient) {
       // namespace: FEATURE2
       { baseTranslateUrl, moduleName: 'feature2' }
     ]
-  };
-  return new ModuleTranslateLoader(http, options);
+  }
+  return new ModuleTranslateLoader(http, options)
 }
 ```
 
@@ -136,42 +133,42 @@ interface IModuleTranslationOptions {
   /**
    * The translation module configurations
    */
-  modules: IModuleTranslation[];
+  modules: IModuleTranslation[]
   /**
    * By default, each module gets its own namespace so it doesn't conflict with other modules
    */
-  disableNamespace?: boolean;
+  disableNamespace?: boolean
   /**
    * By default, namespaces are uppercase
    */
-  lowercaseNamespace?: boolean;
+  lowercaseNamespace?: boolean
   /**
    * By default, it'll perform a deepmerge when merging translation files
    */
-  deepMerge?: boolean;
+  deepMerge?: boolean
   /**
    * Set a version to prevent the browser from caching the translation files.
    * Each translation will get a query parameter with the version number
    * @example 'en.json?v=123'
    */
-  version?: string | number;
+  version?: string | number
   /**
    * Function that gets executed if an error occurred while retrieving a translation file
    * @param error the error that occurred
    * @param path the path to the location file
    */
-  translateError?: (error: any, path: string) => void;
+  translateError?: (error: any, path: string) => void
   /**
    * Custom translate merge function after retrieving all translation files
    * @param translations the resolved translation files
    */
-  translateMerger?: (translations: Translation[]) => Translation;
+  translateMerger?: (translations: Translation[]) => Translation
   /**
    * Provide custom headers at 'root' level, which means this headers gets added to every request
    * unless you specify headers at 'module' level.
    * @see modules
    */
-  headers?: HttpHeaders;
+  headers?: HttpHeaders
 }
 ```
 
@@ -184,7 +181,7 @@ interface IModuleTranslation {
    * @description omit moduleName if you have a translate file at baseTranslateUrl level
    * @see baseTranslateUrl
    */
-  moduleName?: string;
+  moduleName?: string
   /**
    * The base translate URL
    *
@@ -192,19 +189,19 @@ interface IModuleTranslation {
    * @description the final url will then be: ./assets/i18n/shared if the moduleName is shared
    * @see moduleName
    */
-  baseTranslateUrl: string;
+  baseTranslateUrl: string
   /**
    * By default, it uses the moduleName as namespace
    * @see moduleName
    *
    * Use this property if you want to override the default namespace
    */
-  namespace?: string;
+  namespace?: string
   /**
    * Custom translation map function after retrieving a translation file
    * @param translation the resolved translation file
    */
-  translateMap?: (translation: Translation) => Translation;
+  translateMap?: (translation: Translation) => Translation
   /**
    * Custom path template for fetching translations
    * @example
@@ -216,11 +213,11 @@ interface IModuleTranslation {
    * It depends whether you have a moduleName defined
    * @see moduleName
    */
-  pathTemplate?: string;
+  pathTemplate?: string
   /**
    * Provide custom headers at 'module' level. These headers only apply to this module.
    */
-  headers?: HttpHeaders;
+  headers?: HttpHeaders
 }
 ```
 
@@ -242,7 +239,7 @@ const options: IModuleTranslationOptions = {
     // resolves to: ./assets/my-path/en/feature2.json
     { baseTranslateUrl, moduleName: 'feature2', pathTemplate: '{baseTranslateUrl}/my-path/{language}/{moduleName}' }
   ]
-};
+}
 ```
 
 ## Custom headers

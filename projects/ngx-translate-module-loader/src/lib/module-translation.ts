@@ -1,5 +1,5 @@
-import { HttpHeaders } from '@angular/common/http';
-import { Translation } from './translation';
+import { HttpHeaders } from '@angular/common/http'
+import { Translation } from './translation'
 
 export interface IModuleTranslation {
   /**
@@ -9,7 +9,7 @@ export interface IModuleTranslation {
    * @description omit moduleName if you have a translate file at baseTranslateUrl level
    * @see baseTranslateUrl
    */
-  moduleName?: string;
+  moduleName?: string
   /**
    * The base translate URL
    *
@@ -17,19 +17,19 @@ export interface IModuleTranslation {
    * @description the final url will then be: ./assets/i18n/shared if the moduleName is shared
    * @see moduleName
    */
-  baseTranslateUrl: string;
+  baseTranslateUrl: string
   /**
    * By default, it uses the moduleName as namespace
    * @see moduleName
    *
    * Use this property if you want to override the default namespace
    */
-  namespace?: string;
+  namespace?: string
   /**
    * Custom translation map function after retrieving a translation file
    * @param translation the resolved translation file
    */
-  translateMap?: (translation: Translation) => Translation;
+  translateMap?: (translation: Translation) => Translation
   /**
    * Custom path template for fetching translations
    * @example
@@ -41,9 +41,9 @@ export interface IModuleTranslation {
    * It depends whether you have a moduleName defined
    * @see moduleName
    */
-  pathTemplate?: string;
+  pathTemplate?: string
   /**
    * Provide custom headers at 'module' level. These headers only apply to this module.
    */
-  headers?: HttpHeaders;
+  headers?: HttpHeaders
 }

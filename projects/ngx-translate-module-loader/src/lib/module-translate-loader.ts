@@ -1,17 +1,17 @@
-import { HttpClient } from '@angular/common/http';
-import { TranslateLoader } from '@ngx-translate/core';
-import { mergeDeepRight, reduce } from 'ramda';
-import { forkJoin as ForkJoin, MonoTypeOperatorFunction, Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { IModuleTranslation } from './module-translation';
-import { IModuleTranslationOptions } from './module-translation-options';
-import { Translation } from './translation';
+import { HttpClient } from '@angular/common/http'
+import { TranslateLoader } from '@ngx-translate/core'
+import { mergeDeepRight, reduce } from 'ramda'
+import { forkJoin as ForkJoin, MonoTypeOperatorFunction, Observable, of } from 'rxjs'
+import { catchError, map } from 'rxjs/operators'
+import { IModuleTranslation } from './module-translation'
+import { IModuleTranslationOptions } from './module-translation-options'
+import { Translation } from './translation'
 
-const concatJson = (path: string) => path.concat('.json');
+const concatJson = (path: string) => path.concat('.json')
 
-const PATH_TEMPLATE_REGEX = /{([^}]+)}/gi;
-const PATH_CLEAN_REGEX = /([^:]\/)\/+/gi;
-const DEFAULT_PATH_TEMPLATE = '{baseTranslateUrl}/{moduleName}/{language}';
+const PATH_TEMPLATE_REGEX = /{([^}]+)}/gi
+const PATH_CLEAN_REGEX = /([^:]\/)\/+/gi
+const DEFAULT_PATH_TEMPLATE = '{baseTranslateUrl}/{moduleName}/{language}'
 
 export class ModuleTranslateLoader implements TranslateLoader {
   private readonly defaultOptions: IModuleTranslationOptions = {
@@ -19,7 +19,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
     lowercaseNamespace: false,
     deepMerge: true,
     ...this.options
-  };
+  }
 
   /**
    * The ModuleTranslateLoader for 'ngx-translate/core'
@@ -34,8 +34,8 @@ export class ModuleTranslateLoader implements TranslateLoader {
   constructor(private readonly http: HttpClient, private readonly options: IModuleTranslationOptions) {}
 
   public getTranslation(language: string): Observable<Translation> {
-    const { defaultOptions: options } = this;
-    return this.mergeTranslations(this.getModuleTranslations(language, options), options);
+    const { defaultOptions: options } = this
+    return this.mergeTranslations(this.getModuleTranslations(language, options), options)
   }
 
   private mergeTranslations(
@@ -48,20 +48,20 @@ export class ModuleTranslateLoader implements TranslateLoader {
           ? translateMerger(translations)
           : deepMerge
           ? reduce(mergeDeepRight, Object(), translations)
-          : translations.reduce((acc, curr) => ({ ...acc, ...curr }), Object());
+          : translations.reduce((acc, curr) => ({ ...acc, ...curr }), Object())
       })
-    );
+    )
   }
 
   private getModuleTranslations(language: string, options: IModuleTranslationOptions): Observable<Translation>[] {
-    const { modules } = options;
+    const { modules } = options
 
     return modules.map((module) => {
-      const { moduleName } = module;
+      const { moduleName } = module
       return moduleName
         ? this.fetchTranslationForModule(language, options, module)
-        : this.fetchTranslation(language, options, module);
-    });
+        : this.fetchTranslation(language, options, module)
+    })
   }
 
   private fetchTranslation(
@@ -69,19 +69,19 @@ export class ModuleTranslateLoader implements TranslateLoader {
     { translateError, version, headers }: IModuleTranslationOptions,
     { pathTemplate, baseTranslateUrl, translateMap }: IModuleTranslation
   ): Observable<Translation> {
-    const pathOptions = Object({ baseTranslateUrl, language });
-    const template = pathTemplate || DEFAULT_PATH_TEMPLATE;
+    const pathOptions = Object({ baseTranslateUrl, language })
+    const template = pathTemplate || DEFAULT_PATH_TEMPLATE
 
     const cleanedPath = concatJson(
       template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || '')
-    ).replace(PATH_CLEAN_REGEX, '$1');
+    ).replace(PATH_CLEAN_REGEX, '$1')
 
-    const path = version ? `${cleanedPath}?v=${version}` : cleanedPath;
+    const path = version ? `${cleanedPath}?v=${version}` : cleanedPath
 
     return this.http.get<Translation>(path, { headers }).pipe(
       map((translation) => (translateMap ? translateMap(translation) : translation)),
       this.catchError(cleanedPath, translateError)
-    );
+    )
   }
 
   private fetchTranslationForModule(
@@ -89,20 +89,20 @@ export class ModuleTranslateLoader implements TranslateLoader {
     { disableNamespace, lowercaseNamespace, translateError, version, headers }: IModuleTranslationOptions,
     { pathTemplate, baseTranslateUrl, moduleName, namespace, translateMap, headers: moduleHeaders }: IModuleTranslation
   ): Observable<Translation> {
-    const pathOptions = Object({ baseTranslateUrl, moduleName, language });
-    const template = pathTemplate || DEFAULT_PATH_TEMPLATE;
+    const pathOptions = Object({ baseTranslateUrl, moduleName, language })
+    const template = pathTemplate || DEFAULT_PATH_TEMPLATE
 
     const namespaceKey = namespace
       ? namespace
       : lowercaseNamespace
       ? moduleName!.toLowerCase()
-      : moduleName!.toUpperCase();
+      : moduleName!.toUpperCase()
 
     const cleanedPath = concatJson(
       template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || '')
-    ).replace(PATH_CLEAN_REGEX, '$1');
+    ).replace(PATH_CLEAN_REGEX, '$1')
 
-    const path = version ? `${cleanedPath}?v=${version}` : cleanedPath;
+    const path = version ? `${cleanedPath}?v=${version}` : cleanedPath
 
     return this.http.get<Translation>(path, { headers: moduleHeaders || headers }).pipe(
       map((translation) => {
@@ -110,10 +110,10 @@ export class ModuleTranslateLoader implements TranslateLoader {
           ? translateMap(translation)
           : disableNamespace
           ? translation
-          : Object({ [namespaceKey]: translation });
+          : Object({ [namespaceKey]: translation })
       }),
       this.catchError(cleanedPath, translateError)
-    );
+    )
   }
 
   private catchError<T>(
@@ -122,11 +122,11 @@ export class ModuleTranslateLoader implements TranslateLoader {
   ): MonoTypeOperatorFunction<T> {
     return catchError((e) => {
       if (translateError) {
-        translateError(e, path);
+        translateError(e, path)
       }
 
-      console.error('Unable to load translation file:', path);
-      return of(Object());
-    });
+      console.error('Unable to load translation file:', path)
+      return of(Object())
+    })
   }
 }

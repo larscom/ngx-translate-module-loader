@@ -4,6 +4,7 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -11,9 +12,7 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "paths": {
-      "@larscom/ngx-translate-module-loader": [
-        "projects/ngx-translate-module-loader/src/public-api"
-      ]
+      "@larscom/ngx-translate-module-loader": ["projects/ngx-translate-module-loader/src/public-api"]
     },
     "declaration": false,
     "downlevelIteration": true,
@@ -21,11 +20,8 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "es2020",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "module": "ES2022",
+    "lib": ["ES2022", "dom"],
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {

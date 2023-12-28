@@ -15,12 +15,12 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist",
+            "outputPath": "dist/ngx-translate-module-loader-app",
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "browser": "src/main.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
@@ -41,21 +41,12 @@
                   "maximumError": "4kb"
                 }
               ],
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
@@ -64,10 +55,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "ngx-translate-module-loader-app:build:production"
+              "buildTarget": "ngx-translate-module-loader-app:build:production"
             },
             "development": {
-              "browserTarget": "ngx-translate-module-loader-app:build:development"
+              "buildTarget": "ngx-translate-module-loader-app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -75,7 +66,16 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ngx-translate-module-loader-app:build"
+            "buildTarget": "ngx-translate-module-loader-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-builders/jest:run",
+          "options": {
+            "tsConfig": "tsconfig.spec.json",
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "include": ["src/**/*.spec.ts"],
+            "coverage": true
           }
         }
       }
@@ -84,7 +84,7 @@
       "projectType": "library",
       "root": "projects/ngx-translate-module-loader",
       "sourceRoot": "projects/ngx-translate-module-loader/src",
-      "prefix": "qrcode",
+      "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
@@ -102,12 +102,12 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/jest:run",
           "options": {
+            "tsConfig": "tsconfig.spec.json",
             "polyfills": ["zone.js", "zone.js/testing"],
-            "tsConfig": "projects/ngx-translate-module-loader/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-translate-module-loader/karma.conf.js",
-            "inlineStyleLanguage": "scss"
+            "include": ["src/**/*.spec.ts"],
+            "coverage": true
           }
         }
       }
