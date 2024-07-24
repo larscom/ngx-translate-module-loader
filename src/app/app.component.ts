@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { switchMap } from 'rxjs/operators';
+import { Component } from '@angular/core'
+import { TranslateService } from '@ngx-translate/core'
+import { switchMap } from 'rxjs/operators'
 
 @Component({
   selector: 'app-root',
@@ -36,13 +36,13 @@ import { switchMap } from 'rxjs/operators';
 export class AppComponent {
   translation$ = this.translate.onLangChange
     .asObservable()
-    .pipe(switchMap(({ lang }) => this.translate.getTranslation(lang)));
+    .pipe(switchMap(({ lang }) => this.translate.getTranslation(lang)))
 
   constructor(public readonly translate: TranslateService) {
-    translate.addLangs(['en', 'nl']);
-    translate.setDefaultLang('en');
+    translate.addLangs(['en', 'nl'])
+    translate.setDefaultLang('en')
 
-    const browserLang = translate.getBrowserLang() || 'en';
-    translate.use(browserLang.match(/en|nl/) ? browserLang : 'en');
+    const browserLang = translate.getBrowserLang() || 'en'
+    translate.use(browserLang.match(/en|nl/) ? browserLang : 'en')
   }
 }

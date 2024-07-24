@@ -15,7 +15,6 @@
       "@larscom/ngx-translate-module-loader": ["projects/ngx-translate-module-loader/src/public-api"]
     },
     "declaration": false,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
