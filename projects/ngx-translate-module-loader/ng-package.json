@@ -3,6 +3,5 @@
   "dest": "../../dist/ngx-translate-module-loader",
   "lib": {
     "entryFile": "src/public-api.ts"
-  },
-  "allowedNonPeerDependencies": ["ramda"]
+  }
 }
