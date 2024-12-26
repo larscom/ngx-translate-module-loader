@@ -16,15 +16,8 @@
 ## Installation
 
 ```bash
-npm install @larscom/ngx-translate-module-loader
+npm i @larscom/ngx-translate-module-loader
 ```
-
-Choose the version corresponding to your Angular version
-
-| @angular/core | @larscom/ngx-translate-module-loader |
-| ------------- | ------------------------------------ |
-| >= 12         | >= 3.0.0                             |
-| < 12          | <= 2.2.0                             |
 
 ## Usage
 
@@ -246,13 +239,13 @@ const options: IModuleTranslationOptions = {
 
 ```ts
   const options: IModuleTranslationOptions = {
-    // global headers, applied to every request, unless you specify headers at 'module' level
-    headers: new HttpHeaders().set('Header-Name', 'Header value')
-    modules: [
-      { baseTranslateUrl },
-      // headers only applied to this module
-      { baseTranslateUrl, moduleName: 'feature1', headers: new HttpHeaders().set('Header-Name', 'Header value') },
-      { baseTranslateUrl, moduleName: 'feature2' }
-    ]
-  };
+  // global headers, applied to every request, unless you specify headers at 'module' level
+  headers: new HttpHeaders().set('Header-Name', 'Header value')
+  modules: [
+    { baseTranslateUrl },
+    // headers only applied to this module
+    { baseTranslateUrl, moduleName: 'feature1', headers: new HttpHeaders().set('Header-Name', 'Header value') },
+    { baseTranslateUrl, moduleName: 'feature2' }
+  ]
+};
 ```

@@ -22,13 +22,9 @@
   },
   "homepage": "https://github.com/larscom/ngx-translate-module-loader#readme",
   "peerDependencies": {
-    "@angular/core": ">=6.0.0",
-    "@angular/common": ">=6.0.0",
-    "@ngx-translate/core": ">=10.0.0",
-    "rxjs": ">=7.0.0"
-  },
-  "dependencies": {
-    "ramda": "^0.30.1"
+    "@angular/core": ">=16.0.0",
+    "@angular/common": ">=16.0.0",
+    "@ngx-translate/core": ">=16.0.0"
   },
   "publishConfig": {
     "access": "public"

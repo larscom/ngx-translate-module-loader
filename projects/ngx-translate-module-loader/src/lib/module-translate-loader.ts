@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http'
-import { TranslateLoader } from '@ngx-translate/core'
-import { mergeDeepRight, reduce } from 'ramda'
+import { TranslateLoader, mergeDeep } from '@ngx-translate/core'
 import { forkJoin as ForkJoin, MonoTypeOperatorFunction, Observable, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 import { IModuleTranslation } from './module-translation'
@@ -46,9 +45,7 @@ export class ModuleTranslateLoader implements TranslateLoader {
       map((translations) => {
         return translateMerger
           ? translateMerger(translations)
-          : deepMerge
-          ? reduce(mergeDeepRight, Object(), translations)
-          : translations.reduce((acc, curr) => ({ ...acc, ...curr }), Object())
+          : translations.reduce((acc, curr) => (deepMerge ? mergeDeep(acc, curr) : { ...acc, ...curr }), Object())
       })
     )
   }
