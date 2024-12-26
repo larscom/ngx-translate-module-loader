@@ -4,7 +4,6 @@ import { switchMap } from 'rxjs/operators'
 
 @Component({
   selector: 'app-root',
-  standalone: false,
   template: `
     <main>
       <h2>{{ 'TITLE' | translate }}</h2>

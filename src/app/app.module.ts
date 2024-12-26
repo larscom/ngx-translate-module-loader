@@ -1,9 +1,9 @@
-import { HttpClient, provideHttpClient } from '@angular/common/http'
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
-import { IModuleTranslationOptions, ModuleTranslateLoader } from 'projects/ngx-translate-module-loader/src/public-api'
 import { AppComponent } from './app.component'
+import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core'
+import { ModuleTranslateLoader, IModuleTranslationOptions } from 'projects/ngx-translate-module-loader/src/public-api'
 
 export function ModuleHttpLoaderFactory(http: HttpClient) {
   const baseTranslateUrl = './assets/i18n'
@@ -37,6 +37,6 @@ export function ModuleHttpLoaderFactory(http: HttpClient) {
       }
     })
   ],
-  providers: [provideHttpClient()]
+  providers: [provideHttpClient(withInterceptorsFromDi())]
 })
 export class AppModule {}
