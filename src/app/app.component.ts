@@ -1,11 +1,11 @@
 import { Component } from '@angular/core'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateService, TranslatePipe } from '@ngx-translate/core'
 import { switchMap } from 'rxjs/operators'
+import { NgFor, AsyncPipe, JsonPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-root',
-  standalone: false,
-  template: `
+    selector: 'app-root',
+    template: `
     <main>
       <h2>{{ 'TITLE' | translate }}</h2>
       <div>
@@ -32,16 +32,16 @@ import { switchMap } from 'rxjs/operators'
         <pre>{{ translation$ | async | json }}</pre>
       </div>
     </main>
-  `
+  `,
+    imports: [NgFor, AsyncPipe, JsonPipe, TranslatePipe]
 })
 export class AppComponent {
   translation$ = this.translate.onLangChange
-    .asObservable()
-    .pipe(switchMap(({ lang }) => this.translate.getTranslation(lang)))
+    .pipe(switchMap(({ lang }) => this.translate.reloadLang(lang)))
 
   constructor(public readonly translate: TranslateService) {
     translate.addLangs(['en', 'nl'])
-    translate.setDefaultLang('en')
+    translate.setFallbackLang('en')
 
     const browserLang = translate.getBrowserLang() || 'en'
     translate.use(browserLang.match(/en|nl/) ? browserLang : 'en')
