@@ -4,7 +4,6 @@
 ![npm](https://img.shields.io/npm/dw/@larscom/ngx-translate-module-loader)
 [![license](https://img.shields.io/npm/l/@larscom/ngx-translate-module-loader.svg)](https://github.com/larscom/ngx-translate-module-loader/blob/main/LICENSE)
 
-
 > Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core). Fetch multiple translations (http only) and configure them to your needs. Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other.
 
 ### ✨ [View on StackBlitz](https://stackblitz.com/edit/ngx-translate-module-loader)
@@ -21,52 +20,36 @@ npm i @larscom/ngx-translate-module-loader
 
 ## Usage
 
-Create an exported `moduleHttpLoaderFactory` function
+Import the `provideModuleTranslateLoader` function and provide the options.
 
 ```ts
-import { NgModule } from '@angular/core'
-import { BrowserModule } from '@angular/platform-browser'
-import { HttpClientModule, HttpClient } from '@angular/common/http'
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core'
-import { ModuleTranslateLoader, IModuleTranslationOptions } from '@larscom/ngx-translate-module-loader'
-import { AppComponent } from './app'
+import { provideHttpClient } from '@angular/common/http'
+import { bootstrapApplication } from '@angular/platform-browser'
+import { provideModuleTranslateLoader } from '@larscom/ngx-translate-module-loader'
+import { provideTranslateService } from '@ngx-translate/core'
+import { AppComponent } from './app/app.component'
 
-export function moduleHttpLoaderFactory(http: HttpClient) {
-  const baseTranslateUrl = './assets/i18n'
+const baseTranslateUrl = './assets/i18n'
 
-  const options: IModuleTranslationOptions = {
-    modules: [
-      // final url: ./assets/i18n/en.json
-      { baseTranslateUrl },
-      // final url: ./assets/i18n/feature1/en.json
-      { baseTranslateUrl, moduleName: 'feature1' },
-      // final url: ./assets/i18n/feature2/en.json
-      { baseTranslateUrl, moduleName: 'feature2' }
-    ]
-  }
-
-  return new ModuleTranslateLoader(http, options)
-}
-
-@NgModule({
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: moduleHttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    })
-  ],
-  bootstrap: [AppComponent]
-})
-export class AppModule {
-  constructor(readonly translate: TranslateService) {
-    translate.setDefaultLang('en')
-  }
-}
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideTranslateService({
+      // use loader and provide options
+      loader: provideModuleTranslateLoader({
+        modules: [
+          // final url: ./assets/i18n/en.json
+          { baseTranslateUrl },
+          // final url: ./assets/i18n/feature1/en.json
+          { moduleName: 'feature1', baseTranslateUrl },
+          // final url: ./assets/i18n/feature2/en.json
+          { moduleName: 'feature2', baseTranslateUrl }
+        ]
+      })
+    }),
+    // http client is mandatory
+    provideHttpClient()
+  ]
+}).catch((err) => console.error(err))
 ```
 
 ## Namespacing
@@ -76,20 +59,17 @@ By default, each translation file gets it's own namespace based on the `moduleNa
 For example with these options:
 
 ```ts
-export function moduleHttpLoaderFactory(http: HttpClient) {
-  const baseTranslateUrl = './assets/i18n'
+const baseTranslateUrl = './assets/i18n'
 
-  const options: IModuleTranslationOptions = {
-    modules: [
-      // no moduleName/namespace
-      { baseTranslateUrl },
-      // namespace: FEATURE1
-      { baseTranslateUrl, moduleName: 'feature1' },
-      // namespace: FEATURE2
-      { baseTranslateUrl, moduleName: 'feature2' }
-    ]
-  }
-  return new ModuleTranslateLoader(http, options)
+const options: IModuleTranslationOptions = {
+  modules: [
+    // no moduleName/namespace
+    { baseTranslateUrl },
+    // namespace: FEATURE1
+    { baseTranslateUrl, moduleName: 'feature1' },
+    // namespace: FEATURE2
+    { baseTranslateUrl, moduleName: 'feature2' }
+  ]
 }
 ```
 
@@ -122,7 +102,7 @@ Even though all JSON files from those modules are the same, they don't conflict 
 The configuration is very flexible, you can even define custom templates for fetching translations.
 
 ```ts
-interface IModuleTranslationOptions {
+export interface IModuleTranslationOptions {
   /**
    * The translation module configurations
    */
@@ -155,7 +135,7 @@ interface IModuleTranslationOptions {
    * Custom translate merge function after retrieving all translation files
    * @param translations the resolved translation files
    */
-  translateMerger?: (translations: Translation[]) => Translation
+  translateMerger?: (translations: TranslationObject[]) => TranslationObject
   /**
    * Provide custom headers at 'root' level, which means this headers gets added to every request
    * unless you specify headers at 'module' level.
@@ -166,7 +146,7 @@ interface IModuleTranslationOptions {
 ```
 
 ```ts
-interface IModuleTranslation {
+export interface IModuleTranslation {
   /**
    * The module name
    *
@@ -194,7 +174,7 @@ interface IModuleTranslation {
    * Custom translation map function after retrieving a translation file
    * @param translation the resolved translation file
    */
-  translateMap?: (translation: Translation) => Translation
+  translateMap?: (translation: TranslationObject) => TranslationObject
   /**
    * Custom path template for fetching translations
    * @example
