@@ -3,12 +3,11 @@ import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@an
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { TestBed } from '@angular/core/testing'
 import { BrowserTestingModule } from '@angular/platform-browser/testing'
-import { Translation } from 'projects/ngx-translate-module-loader/src/public-api'
+import { TranslationObject } from '@ngx-translate/core'
 import { ModuleTranslateLoader } from './module-translate-loader'
 import { IModuleTranslationOptions } from './module-translation-options'
-import { TranslationKey } from './translation'
 
-const translation: Translation = {
+const translation: TranslationObject = {
   key: 'value',
   key1: 'value1',
   parent: {
@@ -18,7 +17,7 @@ const translation: Translation = {
   }
 }
 
-const completeTranslation: Translation = {
+const completeTranslation: TranslationObject = {
   feature1: {
     key1: 'feature1_value1',
     key2: 'feature1_value2',
@@ -175,7 +174,7 @@ describe('ModuleTranslateLoader', () => {
   it('should load the english translation from different modules with a custom translateMerger', (done) => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
-      translateMerger: (translations: Translation[]) => {
+      translateMerger: (translations: TranslationObject[]) => {
         return translations.reduce((acc, curr) => ({ ...acc, ...curr }), Object())
       }
     }
@@ -220,7 +219,7 @@ describe('ModuleTranslateLoader', () => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
       expect(mock.request.method).toEqual('GET')
       const response = moduleName ? completeTranslation[moduleName as keyof Object] : translation
-      mock.flush(response)
+      mock.flush(Object(response))
     })
   })
   it('should load the english translation from different modules with a custom translateMap', (done) => {
@@ -230,9 +229,8 @@ describe('ModuleTranslateLoader', () => {
         {
           moduleName: undefined,
           baseTranslateUrl: './assets/i18n',
-          translateMap: (translation: Translation) => {
+          translateMap: (translation: TranslationObject) => {
             return Object.keys(translation)
-              .map((key) => key as TranslationKey)
               .reduce((acc, curr) => {
                 return {
                   ...acc,
@@ -244,9 +242,8 @@ describe('ModuleTranslateLoader', () => {
         {
           moduleName: 'feature1',
           baseTranslateUrl: './assets/i18n',
-          translateMap: (translation: Translation) => {
+          translateMap: (translation: TranslationObject) => {
             return Object.keys(translation)
-              .map((key) => key as TranslationKey)
               .reduce((acc, curr) => {
                 return {
                   ...acc,
@@ -284,7 +281,7 @@ describe('ModuleTranslateLoader', () => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
       expect(mock.request.method).toEqual('GET')
       const response = moduleName ? completeTranslation[moduleName as keyof Object] : translation
-      mock.flush(response)
+      mock.flush(Object(response))
     })
   })
 
@@ -323,7 +320,7 @@ describe('ModuleTranslateLoader', () => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
       expect(mock.request.method).toEqual('GET')
       const response = moduleName ? completeTranslation[moduleName as keyof Object] : translation
-      mock.flush(response)
+      mock.flush(Object(response))
     })
   })
 
@@ -362,7 +359,7 @@ describe('ModuleTranslateLoader', () => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
       expect(mock.request.method).toEqual('GET')
       const response = moduleName ? completeTranslation[moduleName as keyof Object] : translation
-      mock.flush(response)
+      mock.flush(Object(response))
     })
   })
 
@@ -406,7 +403,7 @@ describe('ModuleTranslateLoader', () => {
 
       const response = moduleName ? completeTranslation[moduleName as keyof Object] : translation
 
-      mock.flush(response, {
+      mock.flush(Object(response), {
         status: moduleName == null ? 404 : 200,
         statusText: moduleName == null ? 'not found' : 'ok'
       })

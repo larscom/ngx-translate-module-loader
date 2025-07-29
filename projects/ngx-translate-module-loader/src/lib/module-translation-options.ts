@@ -1,6 +1,6 @@
 import { HttpHeaders } from '@angular/common/http'
+import { TranslationObject } from '@ngx-translate/core'
 import { IModuleTranslation } from './module-translation'
-import { Translation } from './translation'
 
 export interface IModuleTranslationOptions {
   /**
@@ -35,7 +35,7 @@ export interface IModuleTranslationOptions {
    * Custom translate merge function after retrieving all translation files
    * @param translations the resolved translation files
    */
-  translateMerger?: (translations: Translation[]) => Translation
+  translateMerger?: (translations: TranslationObject[]) => TranslationObject
   /**
    * Provide custom headers at 'root' level, which means this headers gets added to every request
    * unless you specify headers at 'module' level.

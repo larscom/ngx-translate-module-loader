@@ -1,5 +1,5 @@
 import { HttpHeaders } from '@angular/common/http'
-import { Translation } from './translation'
+import { TranslationObject } from '@ngx-translate/core'
 
 export interface IModuleTranslation {
   /**
@@ -29,7 +29,7 @@ export interface IModuleTranslation {
    * Custom translation map function after retrieving a translation file
    * @param translation the resolved translation file
    */
-  translateMap?: (translation: Translation) => Translation
+  translateMap?: (translation: TranslationObject) => TranslationObject
   /**
    * Custom path template for fetching translations
    * @example

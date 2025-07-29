@@ -36,12 +36,11 @@ import { switchMap } from 'rxjs/operators'
 })
 export class AppComponent {
   translation$ = this.translate.onLangChange
-    .asObservable()
-    .pipe(switchMap(({ lang }) => this.translate.getTranslation(lang)))
+    .pipe(switchMap(({ lang }) => this.translate.reloadLang(lang)))
 
   constructor(public readonly translate: TranslateService) {
     translate.addLangs(['en', 'nl'])
-    translate.setDefaultLang('en')
+    translate.setFallbackLang('en')
 
     const browserLang = translate.getBrowserLang() || 'en'
     translate.use(browserLang.match(/en|nl/) ? browserLang : 'en')
