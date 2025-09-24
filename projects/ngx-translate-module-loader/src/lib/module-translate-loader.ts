@@ -5,7 +5,7 @@ import { catchError, map } from 'rxjs/operators'
 import { IModuleTranslation } from './module-translation'
 import { IModuleTranslationOptions } from './module-translation-options'
 
-const concatJson = (path: string) => path.concat('.json')
+const appendFileExtension = (path: string, extension = 'json') => path.concat(`.${extension}`)
 
 const PATH_TEMPLATE_REGEX = /{([^}]+)}/gi
 const PATH_CLEAN_REGEX = /([^:]\/)\/+/gi
@@ -62,19 +62,23 @@ export class ModuleTranslateLoader implements TranslateLoader {
 
   private fetchTranslation(
     language: string,
-    { translateError, version, headers }: IModuleTranslationOptions,
-    { pathTemplate, baseTranslateUrl, translateMap }: IModuleTranslation
+    { translateError, version, headers, fileParser: fileParserRoot }: IModuleTranslationOptions,
+    { pathTemplate, baseTranslateUrl, translateMap, fileParser: fileParserModule }: IModuleTranslation
   ): Observable<TranslationObject> {
     const pathOptions = Object({ baseTranslateUrl, language })
     const template = pathTemplate || DEFAULT_PATH_TEMPLATE
+    const fileParser = fileParserModule ?? fileParserRoot
+    const parseFn = fileParser?.parseFn ?? JSON.parse
 
-    const cleanedPath = concatJson(
-      template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || '')
+    const cleanedPath = appendFileExtension(
+      template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || ''),
+      fileParser?.fileExtension
     ).replace(PATH_CLEAN_REGEX, '$1')
 
     const path = version ? `${cleanedPath}?v=${version}` : cleanedPath
 
-    return this.http.get<TranslationObject>(path, { headers }).pipe(
+    return this.http.get(path, { responseType: 'text', headers }).pipe(
+      map((text) => parseFn(text)),
       map((translation) => (translateMap ? translateMap(translation) : translation)),
       this.catchError(cleanedPath, translateError)
     )
@@ -82,11 +86,28 @@ export class ModuleTranslateLoader implements TranslateLoader {
 
   private fetchTranslationForModule(
     language: string,
-    { disableNamespace, lowercaseNamespace, translateError, version, headers }: IModuleTranslationOptions,
-    { pathTemplate, baseTranslateUrl, moduleName, namespace, translateMap, headers: moduleHeaders }: IModuleTranslation
+    {
+      disableNamespace,
+      lowercaseNamespace,
+      translateError,
+      version,
+      headers,
+      fileParser: fileParserRoot
+    }: IModuleTranslationOptions,
+    {
+      pathTemplate,
+      baseTranslateUrl,
+      moduleName,
+      namespace,
+      translateMap,
+      headers: headersModule,
+      fileParser: fileParserModule
+    }: IModuleTranslation
   ): Observable<TranslationObject> {
     const pathOptions = Object({ baseTranslateUrl, moduleName, language })
     const template = pathTemplate || DEFAULT_PATH_TEMPLATE
+    const fileParser = fileParserModule ?? fileParserRoot
+    const parseFn = fileParser?.parseFn ?? JSON.parse
 
     const namespaceKey = namespace
       ? namespace
@@ -94,13 +115,15 @@ export class ModuleTranslateLoader implements TranslateLoader {
       ? moduleName!.toLowerCase()
       : moduleName!.toUpperCase()
 
-    const cleanedPath = concatJson(
-      template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || '')
+    const cleanedPath = appendFileExtension(
+      template.replace(PATH_TEMPLATE_REGEX, (_, m1: string) => pathOptions[m1] || ''),
+      fileParser?.fileExtension
     ).replace(PATH_CLEAN_REGEX, '$1')
 
     const path = version ? `${cleanedPath}?v=${version}` : cleanedPath
 
-    return this.http.get<TranslationObject>(path, { headers: moduleHeaders || headers }).pipe(
+    return this.http.get(path, { responseType: 'text', headers: headersModule || headers }).pipe(
+      map((text) => parseFn(text)),
       map((translation) => {
         return translateMap
           ? translateMap(translation)

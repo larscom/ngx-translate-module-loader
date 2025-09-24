@@ -108,6 +108,27 @@ export interface IModuleTranslationOptions {
    */
   modules: IModuleTranslation[]
   /**
+   * Custom parser after retrieving a response from the server in 'text' format.
+   * By using this property you can parse raw text into the required TranslationObject.
+   *
+   * This parser will be used for every 'module' unless you specificy a fileParser at 'module' level.
+   */
+  fileParser?: {
+    /**
+     * This property will append the file extension to the url when fetching from the server.
+     * For example: ./assets/i18n/feature1/en.json5 when you set it as json5
+     */
+    fileExtension: 'json5' | 'xml' | string
+    /**
+     * The parser function that can parse a string to a TranslationObject
+     *
+     * For example: for a json file you would typically use: JSON.parse()
+     *
+     * @param translation the raw translation file as text
+     */
+    parseFn: (translation: string) => TranslationObject
+  }
+  /**
    * By default, each module gets its own namespace so it doesn't conflict with other modules
    */
   disableNamespace?: boolean
@@ -176,6 +197,25 @@ export interface IModuleTranslation {
    */
   translateMap?: (translation: TranslationObject) => TranslationObject
   /**
+   * Custom parser after retrieving a response from the server in 'text' format.
+   * By using this property you can parse raw text into the required TranslationObject.
+   */
+  fileParser?: {
+    /**
+     * This property will append the file extension to the url when fetching from the server.
+     * For example: ./assets/i18n/feature1/en.json5 when you set it as json5
+     */
+    fileExtension: 'json5' | 'xml' | string
+    /**
+     * The parser function that can parse a string to a TranslationObject
+     *
+     * For example: for a json file you would typically use: JSON.parse()
+     *
+     * @param translation the raw translation file as text
+     */
+    parseFn: (translation: string) => TranslationObject
+  }
+  /**
    * Custom path template for fetching translations
    * @example
    * '{baseTranslateUrl}/{moduleName}/{language}'
@@ -228,4 +268,31 @@ const options: IModuleTranslationOptions = {
     { baseTranslateUrl, moduleName: 'feature2' }
   ]
 };
+```
+
+## Custom file parser
+
+You can provide a custom file parser, this parser kicks in after retrieving the file from the server in text format. This allows you to use JSON5 or XML instead of the default JSON format.
+
+```ts
+const options: IModuleTranslationOptions = {
+  // global fileParser, applied to every module, unless you specify fileParser at 'module' level
+  fileParser: {
+    fileExtension: 'json5',
+    parseFn: (text) => JSON5.parse(text)
+  },
+  modules: [
+    { baseTranslateUrl },
+    // fileParser only applied to this module
+    {
+      baseTranslateUrl,
+      moduleName: 'feature1',
+      fileParser: {
+        fileExtension: 'xml',
+        parseFn: (text) => XML.parse(text)
+      }
+    },
+    { baseTranslateUrl, moduleName: 'feature2' }
+  ]
+}
 ```

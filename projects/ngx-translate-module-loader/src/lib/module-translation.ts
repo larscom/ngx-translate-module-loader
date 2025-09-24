@@ -31,6 +31,25 @@ export interface IModuleTranslation {
    */
   translateMap?: (translation: TranslationObject) => TranslationObject
   /**
+   * Custom parser after retrieving a response from the server in 'text' format.
+   * By using this property you can parse raw text into the required TranslationObject.
+   */
+  fileParser?: {
+    /**
+     * This property will append the file extension to the url when fetching from the server.
+     * For example: ./assets/i18n/feature1/en.json5 when you set it as json5
+     */
+    fileExtension: 'json5' | 'xml' | string
+    /**
+     * The parser function that can parse a string to a TranslationObject
+     * 
+     * For example: for a json file you would typically use: JSON.parse()
+     * 
+     * @param translation the raw translation file as text
+     */
+    parseFn: (translation: string) => TranslationObject
+  }
+  /**
    * Custom path template for fetching translations
    * @example
    * '{baseTranslateUrl}/{moduleName}/{language}'

@@ -230,26 +230,24 @@ describe('ModuleTranslateLoader', () => {
           moduleName: undefined,
           baseTranslateUrl: './assets/i18n',
           translateMap: (translation: TranslationObject) => {
-            return Object.keys(translation)
-              .reduce((acc, curr) => {
-                return {
-                  ...acc,
-                  [curr.toUpperCase()]: translation[curr]
-                }
-              }, Object())
+            return Object.keys(translation).reduce((acc, curr) => {
+              return {
+                ...acc,
+                [curr.toUpperCase()]: translation[curr]
+              }
+            }, Object())
           }
         },
         {
           moduleName: 'feature1',
           baseTranslateUrl: './assets/i18n',
           translateMap: (translation: TranslationObject) => {
-            return Object.keys(translation)
-              .reduce((acc, curr) => {
-                return {
-                  ...acc,
-                  [curr.toUpperCase()]: translation[curr]
-                }
-              }, {})
+            return Object.keys(translation).reduce((acc, curr) => {
+              return {
+                ...acc,
+                [curr.toUpperCase()]: translation[curr]
+              }
+            }, {})
           }
         }
       ]
@@ -603,8 +601,57 @@ describe('ModuleTranslateLoader', () => {
     mock.flush(translation)
   })
 
-  function createTestRequest(path: string): TestRequest {
-    return httpMock.expectOne(path.concat('.json'))
+  it('should use global fileParser when fileParser at module level is not defined', (done) => {
+    const globalParseFn = jest.fn()
+    const moduleParseFn = jest.fn()
+
+    const options: IModuleTranslationOptions = {
+      fileParser: {
+        fileExtension: 'json5',
+        parseFn: globalParseFn
+      },
+      modules: [
+        {
+          moduleName: 'feature1',
+          baseTranslateUrl: './assets/i18n',
+          fileParser: {
+            fileExtension: 'xml',
+            parseFn: moduleParseFn
+          }
+        },
+        {
+          moduleName: 'feature2',
+          baseTranslateUrl: './assets/i18n'
+        }
+      ]
+    }
+
+    const language = 'en'
+    const loader = new ModuleTranslateLoader(httpClient, options)
+
+    loader.getTranslation(language).subscribe(() => done())
+
+    let mock = createTestRequest(
+      getTranslatePath(options.modules[0].baseTranslateUrl, options.modules[0].moduleName!, language),
+      'xml'
+    )
+    expect(mock.request.method).toEqual('GET')
+    mock.flush(translation)
+
+    expect(moduleParseFn).toHaveBeenCalledTimes(1)
+
+    mock = createTestRequest(
+      getTranslatePath(options.modules[1].baseTranslateUrl, options.modules[1].moduleName!, language),
+      'json5'
+    )
+    expect(mock.request.method).toEqual('GET')
+    mock.flush(translation)
+    
+    expect(globalParseFn).toHaveBeenCalledTimes(1)
+  })
+
+  function createTestRequest(path: string, extension = 'json'): TestRequest {
+    return httpMock.expectOne(path.concat(`.${extension}`))
   }
 
   function getTranslatePath(baseTranslateUrl: string, moduleName: string, language: string): string {
