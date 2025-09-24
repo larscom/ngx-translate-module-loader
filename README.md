@@ -272,7 +272,7 @@ const options: IModuleTranslationOptions = {
 
 ## Custom file parser
 
-You can provide a custom file parser, this parser kicks in after retrieving the file from the server in text format. This allows you to use JSON5 or XML instead of the default JSON format.
+You can provide a custom file parser, this parser kicks in after retrieving the file from the server in text format. This allows you to use JSON5 or any other format instead of the default JSON format.
 
 ```ts
 const options: IModuleTranslationOptions = {
