@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "test": "ng test ngx-translate-module-loader",
-    "build": "ng build ngx-translate-module-loader"
+    "build": "ng build ngx-translate-module-loader",
+    "build-app": "ng build ngx-translate-module-loader-app"
   },
   "private": true,
   "dependencies": {
