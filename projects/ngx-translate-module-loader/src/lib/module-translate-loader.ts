@@ -12,12 +12,7 @@ const PATH_CLEAN_REGEX = /([^:]\/)\/+/gi
 const DEFAULT_PATH_TEMPLATE = '{baseTranslateUrl}/{moduleName}/{language}'
 
 export class ModuleTranslateLoader implements TranslateLoader {
-  private readonly defaultOptions: IModuleTranslationOptions = {
-    disableNamespace: false,
-    lowercaseNamespace: false,
-    deepMerge: true,
-    ...this.options
-  }
+  private readonly defaultOptions: IModuleTranslationOptions
 
   /**
    * The ModuleTranslateLoader for 'ngx-translate/core'
@@ -29,7 +24,14 @@ export class ModuleTranslateLoader implements TranslateLoader {
    *
    * @see https://github.com/larscom/ngx-translate-module-loader
    */
-  constructor(private readonly http: HttpClient, private readonly options: IModuleTranslationOptions) {}
+  constructor(private readonly http: HttpClient, private readonly options: IModuleTranslationOptions) {
+    this.defaultOptions = {
+      disableNamespace: false,
+      lowercaseNamespace: false,
+      deepMerge: true,
+      ...this.options
+    }
+  }
 
   public getTranslation(language: string): Observable<TranslationObject> {
     const { defaultOptions: options } = this

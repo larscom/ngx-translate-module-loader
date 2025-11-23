@@ -1,13 +1,12 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
-import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@angular/common/http/testing'
-import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { HttpTestingController, provideHttpClientTesting, TestRequest } from '@angular/common/http/testing'
 import { TestBed } from '@angular/core/testing'
-import { BrowserTestingModule } from '@angular/platform-browser/testing'
 import { TranslationObject } from '@ngx-translate/core'
 import { ModuleTranslateLoader } from './module-translate-loader'
 import { IModuleTranslationOptions } from './module-translation-options'
+import { firstValueFrom } from 'rxjs'
 
-const translation: TranslationObject = {
+const defaultTranslation: TranslationObject = {
   key: 'value',
   key1: 'value1',
   parent: {
@@ -63,8 +62,7 @@ describe('ModuleTranslateLoader', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserTestingModule, HttpClientTestingModule],
-      schemas: [NO_ERRORS_SCHEMA]
+      providers: [provideHttpClientTesting()]
     })
     httpMock = TestBed.inject(HttpTestingController)
     httpClient = TestBed.inject(HttpClient)
@@ -74,32 +72,40 @@ describe('ModuleTranslateLoader', () => {
     httpMock.verify()
   })
 
-  it('should load the english translation from different modules with uppercase namespace', (done) => {
+  it('should load the english translation from different modules with uppercase namespace', async () => {
     const language = 'en'
-
     const loader = new ModuleTranslateLoader(httpClient, defaultOptions)
 
-    loader.getTranslation(language).subscribe((translation) => {
-      const expected = {
-        key: 'value',
-        key1: 'value1',
-        parent: { child: { grandChild: 'value1' } },
-        FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
-        FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
-      }
-
-      expect(translation).toEqual(expected)
-      done()
-    })
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
-      expect(mock.request.method).toEqual('GET')
-      mock.flush(translation)
+      expect(mock.request.method).toBe('GET')
+      mock.flush(defaultTranslation)
     })
+
+    const result = await translation
+
+    const expected = {
+      key: 'value',
+      key1: 'value1',
+      parent: { child: { grandChild: 'value1' } },
+      FEATURE1: {
+        key: 'value',
+        key1: 'value1',
+        parent: { child: { grandChild: 'value1' } }
+      },
+      FEATURE2: {
+        key: 'value',
+        key1: 'value1',
+        parent: { child: { grandChild: 'value1' } }
+      }
+    }
+
+    expect(result).toEqual(expected)
   })
 
-  it('should load the english translation from different modules with lowercase namespace', (done) => {
+  it('should load the english translation from different modules with lowercase namespace', async () => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
       lowercaseNamespace: true
@@ -108,27 +114,28 @@ describe('ModuleTranslateLoader', () => {
     const language = 'en'
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe((translation) => {
-      const expected = {
-        key: 'value',
-        key1: 'value1',
-        parent: { child: { grandChild: 'value1' } },
-        feature1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
-        feature2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
-      }
-
-      expect(translation).toEqual(expected)
-      done()
-    })
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
       expect(mock.request.method).toEqual('GET')
-      mock.flush(translation)
+      mock.flush(defaultTranslation)
     })
+
+    const result = await translation
+
+    const expected = {
+      key: 'value',
+      key1: 'value1',
+      parent: { child: { grandChild: 'value1' } },
+      feature1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+      feature2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+    }
+
+    expect(result).toEqual(expected)
   })
 
-  it('should load the english translation from different modules with a custom namespace', (done) => {
+  it('should load the english translation from different modules with a custom namespace', async () => {
     const options: IModuleTranslationOptions = {
       modules: [
         {
@@ -151,27 +158,28 @@ describe('ModuleTranslateLoader', () => {
     const language = 'en'
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe((translation) => {
-      const expected = {
-        key: 'value',
-        key1: 'value1',
-        parent: { child: { grandChild: 'value1' } },
-        Custom1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
-        custom2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
-      }
-
-      expect(translation).toEqual(expected)
-      done()
-    })
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
       expect(mock.request.method).toEqual('GET')
-      mock.flush(translation)
+      mock.flush(defaultTranslation)
     })
+
+    const result = await translation
+
+    const expected = {
+      key: 'value',
+      key1: 'value1',
+      parent: { child: { grandChild: 'value1' } },
+      Custom1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+      custom2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+    }
+
+    expect(result).toEqual(expected)
   })
 
-  it('should load the english translation from different modules with a custom translateMerger', (done) => {
+  it('should load the english translation from different modules with a custom translateMerger', async () => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
       translateMerger: (translations: TranslationObject[]) => {
@@ -180,49 +188,50 @@ describe('ModuleTranslateLoader', () => {
     }
 
     const language = 'en'
-
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe((translation) => {
-      const expected = {
-        key: 'value',
-        key1: 'value1',
-        parent: { child: { grandChild: 'value1' } },
-        FEATURE1: {
-          key1: 'feature1_value1',
-          key2: 'feature1_value2',
-          parent: {
-            child: {
-              grandChild1: 'feature1_value1',
-              grandChild2: 'feature1_value2'
-            }
-          }
-        },
-        FEATURE2: {
-          key3: 'feature2_value3',
-          key4: 'feature2_value4',
-          parent: {
-            child: {
-              grandChild1: 'feature2_value1',
-              grandChild2: 'feature2_value2',
-              grandChild3: 'feature2_value3'
-            }
-          }
-        }
-      }
-
-      expect(translation).toEqual(expected)
-      done()
-    })
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
       expect(mock.request.method).toEqual('GET')
-      const response = moduleName ? completeTranslation[moduleName as keyof Object] : translation
+      const response = moduleName ? completeTranslation[moduleName as keyof Object] : defaultTranslation
       mock.flush(Object(response))
     })
+
+    const result = await translation
+
+    const expected = {
+      key: 'value',
+      key1: 'value1',
+      parent: { child: { grandChild: 'value1' } },
+      FEATURE1: {
+        key1: 'feature1_value1',
+        key2: 'feature1_value2',
+        parent: {
+          child: {
+            grandChild1: 'feature1_value1',
+            grandChild2: 'feature1_value2'
+          }
+        }
+      },
+      FEATURE2: {
+        key3: 'feature2_value3',
+        key4: 'feature2_value4',
+        parent: {
+          child: {
+            grandChild1: 'feature2_value1',
+            grandChild2: 'feature2_value2',
+            grandChild3: 'feature2_value3'
+          }
+        }
+      }
+    }
+
+    expect(result).toEqual(expected)
   })
-  it('should load the english translation from different modules with a custom translateMap', (done) => {
+
+  it('should load the english translation from different modules with a custom translateMap', async () => {
     const options: IModuleTranslationOptions = {
       deepMerge: true,
       modules: [
@@ -254,75 +263,75 @@ describe('ModuleTranslateLoader', () => {
     }
 
     const language = 'en'
-
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe((translation) => {
-      const expected = {
-        KEY: 'value',
-        KEY1: 'feature1_value1',
-        KEY2: 'feature1_value2',
-        PARENT: {
-          child: {
-            grandChild: 'value1',
-            grandChild1: 'feature1_value1',
-            grandChild2: 'feature1_value2'
-          }
-        }
-      }
-
-      expect(translation).toEqual(expected)
-      done()
-    })
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
       expect(mock.request.method).toEqual('GET')
-      const response = moduleName ? completeTranslation[moduleName as keyof Object] : translation
+      const response = moduleName ? completeTranslation[moduleName as keyof Object] : defaultTranslation
       mock.flush(Object(response))
     })
+
+    const result = await translation
+
+    const expected = {
+      KEY: 'value',
+      KEY1: 'feature1_value1',
+      KEY2: 'feature1_value2',
+      PARENT: {
+        child: {
+          grandChild: 'value1',
+          grandChild1: 'feature1_value1',
+          grandChild2: 'feature1_value2'
+        }
+      }
+    }
+
+    expect(result).toEqual(expected)
   })
 
-  it('should load the english translation from different modules with deepMerge and without namespace', (done) => {
+  it('should load the english translation from different modules with deepMerge and without namespace', async () => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
       disableNamespace: true
     }
 
     const language = 'en'
-
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe((translation) => {
-      const expected = {
-        key: 'value',
-        key1: 'feature1_value1',
-        key2: 'feature1_value2',
-        key3: 'feature2_value3',
-        key4: 'feature2_value4',
-        parent: {
-          child: {
-            grandChild: 'value1',
-            grandChild1: 'feature2_value1',
-            grandChild2: 'feature2_value2',
-            grandChild3: 'feature2_value3'
-          }
-        }
-      }
-
-      expect(translation).toEqual(expected)
-      done()
-    })
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
       expect(mock.request.method).toEqual('GET')
-      const response = moduleName ? completeTranslation[moduleName as keyof Object] : translation
+      const response = moduleName ? completeTranslation[moduleName as keyof Object] : defaultTranslation
       mock.flush(Object(response))
     })
+
+    const result = await translation
+
+    const expected = {
+      key: 'value',
+      key1: 'feature1_value1',
+      key2: 'feature1_value2',
+      key3: 'feature2_value3',
+      key4: 'feature2_value4',
+      parent: {
+        child: {
+          grandChild: 'value1',
+          grandChild1: 'feature2_value1',
+          grandChild2: 'feature2_value2',
+          grandChild3: 'feature2_value3'
+        }
+      }
+    }
+
+    expect(result).toEqual(expected)
   })
 
-  it('should load the english translation from different modules without namespace and deepmerge', (done) => {
+  it('should load the english translation from different modules without namespace and deepmerge', async () => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
       disableNamespace: true,
@@ -330,38 +339,38 @@ describe('ModuleTranslateLoader', () => {
     }
 
     const language = 'en'
-
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe((translation) => {
-      const expected = {
-        key: 'value',
-        key1: 'feature1_value1',
-        key2: 'feature1_value2',
-        key3: 'feature2_value3',
-        key4: 'feature2_value4',
-        parent: {
-          child: {
-            grandChild1: 'feature2_value1',
-            grandChild2: 'feature2_value2',
-            grandChild3: 'feature2_value3'
-          }
-        }
-      }
-
-      expect(translation).toEqual(expected)
-      done()
-    })
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
       expect(mock.request.method).toEqual('GET')
-      const response = moduleName ? completeTranslation[moduleName as keyof Object] : translation
+      const response = moduleName ? completeTranslation[moduleName as keyof Object] : defaultTranslation
       mock.flush(Object(response))
     })
+
+    const result = await translation
+
+    const expected = {
+      key: 'value',
+      key1: 'feature1_value1',
+      key2: 'feature1_value2',
+      key3: 'feature2_value3',
+      key4: 'feature2_value4',
+      parent: {
+        child: {
+          grandChild1: 'feature2_value1',
+          grandChild2: 'feature2_value2',
+          grandChild3: 'feature2_value3'
+        }
+      }
+    }
+
+    expect(result).toEqual(expected)
   })
 
-  it('should execute translateError if a http error occurs and still load the other translation files', (done) => {
+  it('should execute translateError if a http error occurs and still load the other translation files', async () => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
       disableNamespace: true,
@@ -373,42 +382,42 @@ describe('ModuleTranslateLoader', () => {
     }
 
     const language = 'en'
-
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe((translation) => {
-      const expected = {
-        key1: 'feature1_value1',
-        key2: 'feature1_value2',
-        key3: 'feature2_value3',
-        key4: 'feature2_value4',
-        parent: {
-          child: {
-            grandChild1: 'feature2_value1',
-            grandChild2: 'feature2_value2',
-            grandChild3: 'feature2_value3'
-          }
-        }
-      }
-
-      expect(translation).toEqual(expected)
-      done()
-    })
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
       expect(mock.request.method).toEqual('GET')
 
-      const response = moduleName ? completeTranslation[moduleName as keyof Object] : translation
+      const response = moduleName ? completeTranslation[moduleName as keyof Object] : defaultTranslation
 
       mock.flush(Object(response), {
         status: moduleName == null ? 404 : 200,
         statusText: moduleName == null ? 'not found' : 'ok'
       })
     })
+
+    const result = await translation
+
+    const expected = {
+      key1: 'feature1_value1',
+      key2: 'feature1_value2',
+      key3: 'feature2_value3',
+      key4: 'feature2_value4',
+      parent: {
+        child: {
+          grandChild1: 'feature2_value1',
+          grandChild2: 'feature2_value2',
+          grandChild3: 'feature2_value3'
+        }
+      }
+    }
+
+    expect(result).toEqual(expected)
   })
 
-  it('should load from custom path templates', (done) => {
+  it('should load from custom path templates', async () => {
     const options: IModuleTranslationOptions = {
       modules: [
         {
@@ -429,32 +438,32 @@ describe('ModuleTranslateLoader', () => {
     }
 
     const language = 'en'
-
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe((translation) => {
-      const expected = {
-        key: 'value',
-        key1: 'value1',
-        parent: { child: { grandChild: 'value1' } },
-        FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
-        FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
-      }
-
-      expect(translation).toEqual(expected)
-      done()
-    })
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path = moduleName ? `${baseTranslateUrl}/${language}/${moduleName}` : `${baseTranslateUrl}/${language}`
       const mock = createTestRequest(path)
       expect(mock.request.method).toEqual('GET')
 
-      mock.flush(translation)
+      mock.flush(defaultTranslation)
     })
+
+    const result = await translation
+
+    const expected = {
+      key: 'value',
+      key1: 'value1',
+      parent: { child: { grandChild: 'value1' } },
+      FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+      FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+    }
+
+    expect(result).toEqual(expected)
   })
 
-  it('should load from multiple different custom path templates', (done) => {
+  it('should load from multiple different custom path templates', async () => {
     const options: IModuleTranslationOptions = {
       modules: [
         {
@@ -480,22 +489,9 @@ describe('ModuleTranslateLoader', () => {
     }
 
     const language = 'en'
-
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe((translation) => {
-      const expected = {
-        key: 'value',
-        key1: 'value1',
-        parent: { child: { grandChild: 'value1' } },
-        FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
-        FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
-        FEATURE3: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
-      }
-
-      expect(translation).toEqual(expected)
-      done()
-    })
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path = moduleName
@@ -507,32 +503,33 @@ describe('ModuleTranslateLoader', () => {
       const mock = createTestRequest(path)
       expect(mock.request.method).toEqual('GET')
 
-      mock.flush(translation)
+      mock.flush(defaultTranslation)
     })
+
+    const result = await translation
+
+    const expected = {
+      key: 'value',
+      key1: 'value1',
+      parent: { child: { grandChild: 'value1' } },
+      FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+      FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+      FEATURE3: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+    }
+
+    expect(result).toEqual(expected)
   })
 
-  it('should have query param with version in each module', (done) => {
+  it('should have query param with version in each module', async () => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
       version: 123
     }
 
     const language = 'en'
-
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe((translation) => {
-      const expected = {
-        key: 'value',
-        key1: 'value1',
-        parent: { child: { grandChild: 'value1' } },
-        FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
-        FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
-      }
-
-      expect(translation).toEqual(expected)
-      done()
-    })
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     defaultOptions.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const path = getTranslatePath(baseTranslateUrl, moduleName!, language)
@@ -540,11 +537,23 @@ describe('ModuleTranslateLoader', () => {
 
       expect(mock.request.method).toEqual('GET')
 
-      mock.flush(translation)
+      mock.flush(defaultTranslation)
     })
+
+    const result = await translation
+
+    const expected = {
+      key: 'value',
+      key1: 'value1',
+      parent: { child: { grandChild: 'value1' } },
+      FEATURE1: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } },
+      FEATURE2: { key: 'value', key1: 'value1', parent: { child: { grandChild: 'value1' } } }
+    }
+
+    expect(result).toEqual(expected)
   })
 
-  it('should add headers to the request in each module', (done) => {
+  it('should add headers to the request in each module', async () => {
     const options: IModuleTranslationOptions = {
       ...defaultOptions,
       headers: new HttpHeaders().set('Header-Name', 'value')
@@ -553,7 +562,7 @@ describe('ModuleTranslateLoader', () => {
     const language = 'en'
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe(() => done())
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     options.modules.forEach(({ baseTranslateUrl, moduleName }) => {
       const mock = createTestRequest(getTranslatePath(baseTranslateUrl, moduleName!, language))
@@ -561,11 +570,13 @@ describe('ModuleTranslateLoader', () => {
       expect(mock.request.method).toEqual('GET')
       expect(mock.request.headers.has('Header-Name')).toBeTruthy()
 
-      mock.flush(translation)
+      mock.flush(defaultTranslation)
     })
+
+    await translation
   })
 
-  it('should add global headers to modules request only if there are no module headers defined', (done) => {
+  it('should add global headers to modules request only if there are no module headers defined', async () => {
     const options: IModuleTranslationOptions = {
       headers: new HttpHeaders().set('Global-Header', 'value'),
       modules: [
@@ -584,14 +595,14 @@ describe('ModuleTranslateLoader', () => {
     const language = 'en'
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe(() => done())
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     let mock = createTestRequest(
       getTranslatePath(options.modules[0].baseTranslateUrl, options.modules[0].moduleName!, language)
     )
     expect(mock.request.method).toEqual('GET')
     expect(mock.request.headers.has('Module-Header')).toBeTruthy()
-    mock.flush(translation)
+    mock.flush(defaultTranslation)
 
     mock = createTestRequest(
       getTranslatePath(options.modules[1].baseTranslateUrl, options.modules[1].moduleName!, language)
@@ -599,11 +610,13 @@ describe('ModuleTranslateLoader', () => {
     expect(mock.request.method).toEqual('GET')
     expect(mock.request.headers.has('Global-Header')).toBeTruthy()
     mock.flush(translation)
+
+    await translation
   })
 
-  it('should use global fileParser when fileParser at module level is not defined', (done) => {
-    const globalParseFn = jest.fn()
-    const moduleParseFn = jest.fn()
+  it('should use global fileParser when fileParser at module level is not defined', async () => {
+    const globalParseFn = vitest.fn()
+    const moduleParseFn = vitest.fn()
 
     const options: IModuleTranslationOptions = {
       fileParser: {
@@ -629,14 +642,14 @@ describe('ModuleTranslateLoader', () => {
     const language = 'en'
     const loader = new ModuleTranslateLoader(httpClient, options)
 
-    loader.getTranslation(language).subscribe(() => done())
+    const translation = firstValueFrom(loader.getTranslation(language))
 
     let mock = createTestRequest(
       getTranslatePath(options.modules[0].baseTranslateUrl, options.modules[0].moduleName!, language),
       'xml'
     )
     expect(mock.request.method).toEqual('GET')
-    mock.flush(translation)
+    mock.flush(defaultTranslation)
 
     expect(moduleParseFn).toHaveBeenCalledTimes(1)
 
@@ -645,9 +658,11 @@ describe('ModuleTranslateLoader', () => {
       'json5'
     )
     expect(mock.request.method).toEqual('GET')
-    mock.flush(translation)
-    
+    mock.flush(defaultTranslation)
+
     expect(globalParseFn).toHaveBeenCalledTimes(1)
+
+    await translation
   })
 
   function createTestRequest(path: string, extension = 'json'): TestRequest {

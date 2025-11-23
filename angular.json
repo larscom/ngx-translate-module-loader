@@ -20,7 +20,7 @@
             "outputPath": "dist/ngx-translate-module-loader-app",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
@@ -70,13 +70,7 @@
           }
         },
         "test": {
-          "builder": "@angular-builders/jest:run",
-          "options": {
-            "tsConfig": "tsconfig.spec.json",
-            "polyfills": ["zone.js", "zone.js/testing"],
-            "include": ["src/**/*.spec.ts"],
-            "coverage": true
-          }
+          "builder": "@angular/build:unit-test"
         }
       }
     },
@@ -87,10 +81,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/ngx-translate-module-loader/ng-package.json"
-          },
+          "builder": "@angular/build:ng-packagr",    
           "configurations": {
             "production": {
               "tsConfig": "projects/ngx-translate-module-loader/tsconfig.lib.prod.json"
@@ -102,12 +93,9 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-builders/jest:run",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "tsconfig.spec.json",
-            "polyfills": ["zone.js", "zone.js/testing"],
-            "include": ["src/**/*.spec.ts"],
-            "coverage": true
+            "tsConfig": "projects/ngx-translate-module-loader/tsconfig.spec.json"       
           }
         }
       }

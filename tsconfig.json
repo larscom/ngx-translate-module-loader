@@ -1,32 +1,23 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "sourceMap": true,
     "paths": {
       "@larscom/ngx-translate-module-loader": [
-        "projects/ngx-translate-module-loader/src/public-api"
+        "./projects/ngx-translate-module-loader/src/public-api"
       ]
     },
-    "declaration": false,
+     "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
     "experimentalDecorators": true,
-    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022",
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
-    "useDefineForClassFields": false
+    "module": "preserve"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -34,5 +25,20 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
     "disableTypeScriptVersionCheck": true
-  }
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/ngx-translate-module-loader/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ngx-translate-module-loader/tsconfig.spec.json"
+    }
+  ]
 }

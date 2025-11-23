@@ -1,7 +1,7 @@
-import { Component } from '@angular/core'
+import { Component, inject } from '@angular/core'
 import { TranslateService, TranslatePipe } from '@ngx-translate/core'
 import { switchMap } from 'rxjs/operators'
-import { NgFor, AsyncPipe, JsonPipe } from '@angular/common'
+import { AsyncPipe, JsonPipe } from '@angular/common'
 
 @Component({
   selector: 'app-root',
@@ -12,13 +12,11 @@ import { NgFor, AsyncPipe, JsonPipe } from '@angular/common'
         <label>
           {{ 'CHANGE_LANGUAGE' | translate }}
           <select #langSelect (change)="translate.use(langSelect.value)">
-            <option
-              *ngFor="let lang of translate.getLangs()"
-              [value]="lang"
-              [selected]="lang === translate.currentLang"
-            >
+            @for (lang of translate.getLangs(); track lang) {
+            <option [value]="lang" [selected]="lang === translate.getCurrentLang()">
               {{ lang }}
             </option>
+            }
           </select>
         </label>
       </div>
@@ -35,16 +33,17 @@ import { NgFor, AsyncPipe, JsonPipe } from '@angular/common'
       </div>
     </main>
   `,
-  imports: [NgFor, AsyncPipe, JsonPipe, TranslatePipe]
+  imports: [AsyncPipe, JsonPipe, TranslatePipe]
 })
 export class AppComponent {
+  translate = inject(TranslateService)
   translation$ = this.translate.onLangChange.pipe(switchMap(({ lang }) => this.translate.reloadLang(lang)))
 
-  constructor(public readonly translate: TranslateService) {
-    translate.addLangs(['en', 'nl'])
-    translate.setFallbackLang('en')
+  constructor() {
+    this.translate.addLangs(['en', 'nl'])
+    this.translate.setFallbackLang('en')
 
-    const browserLang = translate.getBrowserLang() || 'en'
-    translate.use(browserLang.match(/en|nl/) ? browserLang : 'en')
+    const browserLang = this.translate.getBrowserLang() || 'en'
+    this.translate.use(browserLang.match(/en|nl/) ? browserLang : 'en')
   }
 }
