@@ -6,8 +6,6 @@
 
 > Highly configurable and flexible translations loader for [@ngx-translate/core](https://github.com/ngx-translate/core). Fetch multiple translations (http only) and configure them to your needs. Each translation file has it's own **namespace** out of the box so the key/value pairs do not conflict with each other.
 
-### ✨ [View on StackBlitz](https://stackblitz.com/edit/ngx-translate-module-loader)
-
 ## Dependencies
 
 `@larscom/ngx-translate-module-loader` depends on [@ngx-translate/core](https://github.com/ngx-translate/core) and [Angular](https://github.com/angular/angular).
