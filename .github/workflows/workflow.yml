@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 26
       - run: |
           npm ci --ignore-scripts --legacy-peer-deps
           npm run build
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 26
       - run: |
           npm ci --ignore-scripts --legacy-peer-deps
           npm run build-app
@@ -61,7 +61,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 26
           registry-url: https://registry.npmjs.org/
       - run: |
           npm ci --ignore-scripts --legacy-peer-deps
